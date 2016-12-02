@@ -31,6 +31,7 @@
     "jsonschema": "^1.1.0",
     "morgan": "^1.7.0",
     "phantomjs-prebuilt": "^2.1.13",
-    "tmp": "0.0.31"
+    "tmp": "0.0.31",
+    "urijs": "^1.18.3"
   }
 }

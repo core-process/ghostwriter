@@ -4,7 +4,37 @@ import path from 'path';
 import fs from 'fs';
 import morgan from 'morgan';
 import express from 'express';
+import bodyParser from 'body-parser';
 import { ArgumentParser } from 'argparse';
+import { validate } from 'jsonschema';
+import deepExtend from 'deep-extend';
+
+// globals
+let config = {
+  refreshRate: 60 * 60 * 1000,
+  sandbox: {
+    viewportWidth: 1280,
+    viewportHeight: 800,
+    completionTimeout: 30 * 1000
+  }
+};
+let sitemaps = [ ];
+let cache = { };
+
+const CONFIG_SCHEMA = {
+  'type': 'object',
+  'properties': {
+    'refreshRate': { 'type': 'integer', 'minimum': 0 },
+    'sandbox': {
+      'type': 'object',
+      'properties': {
+        'viewportWidth': { 'type': 'integer', 'minimum': 0 },
+        'viewportHeight': { 'type': 'integer', 'minimum': 0 },
+        'completionTimeout': { 'type': 'integer', 'minimum': 0 },
+      }
+    }
+  }
+};
 
 // crawler
 async function crawl(url, sandboxConfig) {
@@ -38,7 +68,6 @@ async function crawl(url, sandboxConfig) {
 }
 
 // loader
-let cache = { };
 async function load(url, expiration, sandboxConfig) {
   // load from cache
   console.log('*** ghostwriter:', 'loading url', url);
@@ -73,39 +102,56 @@ async function main(port, databaseUri) {
   // setup service
   let app = express();
 
-  // enable logging
+  // enable logging and body parser
   app.use(morgan('combined'));
+  app.use(bodyParser.json());
 
-  // '/clear' route
-  app.all('/clear', (request, response) => {
+  // '/configure' route
+  app.get('/configure', (request, response) => {
+    const newConfig = request.body;
+    if(validate(newConfig, CONFIG_SCHEMA).valid) {
+      config = deepExtend({}, config, newConfig);
+      response.sendStatus(200);
+    }
+    else {
+      response.sendStatus(500);
+    }
+  });
+
+  // '/add-sitemap' route
+  app.get('/add-sitemap', (request, response) => {
+    response.sendStatus(200);
+  });
+
+  // '/remove-sitemap' route
+  app.get('/remove-sitemap', (request, response) => {
+    response.sendStatus(200);
+  });
+
+  // '/clear-sitemaps' route
+  app.get('/clear-sitemaps', (request, response) => {
+    response.sendStatus(200);
+  });
+
+  // '/clear-cache' route
+  app.get('/clear-cache', (request, response) => {
     cache = { };
     response.sendStatus(200);
   });
 
-  // '/retrieve' route
-  app.all('/retrieve', async (request, response) => {
+  // '/retrieve-page' route
+  app.get('/retrieve-page', async (request, response) => {
     try {
       // extract params
       if(!request.query.url) {
         throw new Error('url missing');
       }
-      const url = request.query.url;
-      const expiration = request.query.expiration
-        ? parseInt(request.query.expiration)
-        : 1000 * 60 * 60;
-      const sandboxConfig = {
-        viewportWidth: request.query.viewportWidth
-          ? parseInt(request.query.viewportWidth)
-          : 1280,
-        viewportHeight: request.query.viewportHeight
-          ? parseInt(request.query.viewportHeight)
-          : 800,
-        completionTimeout: request.query.completionTimeout
-          ? parseInt(request.query.completionTimeout)
-          : 1000 * 30,
-      };
       // load url
-      const item = await load(url, expiration, sandboxConfig);
+      const item = await load(
+        request.query.url,
+        config.refreshRate,
+        config.sandbox
+      );
       // send response
       response
         .status(200)

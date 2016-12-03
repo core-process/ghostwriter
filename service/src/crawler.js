@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import URI from 'urijs';
 
-export async function crawl(url, config) {
+export async function crawl(config, url) {
   console.log('*** ghostwriter:', 'crawling url', url);
   // finalize url
   url = new URI(url);

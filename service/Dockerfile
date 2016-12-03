@@ -19,7 +19,7 @@ RUN rm -r -f /app/src
 # start your application
 CMD [ "npm", "start", "--", \
   "--port", "8888", \
-  "--database", "mongodb://database:27017/ghostwriter_cache" \
+  "--database-uri", "mongodb://database:27017/ghostwriter" \
 ]
 
 # expose the port the application listens on, used later in

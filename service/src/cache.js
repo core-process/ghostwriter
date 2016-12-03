@@ -28,7 +28,7 @@ export default class Cache {
       await this._collection.insertOne(page);
     }
     // update page in background if required
-    else if((page.timestamp + config.refreshRate) < Date.now()) {
+    else if((page.timestamp + config.refreshCycle) < Date.now()) {
       console.log('*** ghostwriter:', 'background crawling url', url);
       crawl(config, url)
         .then((content) => {

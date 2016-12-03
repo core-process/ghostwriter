@@ -4,7 +4,7 @@ import deepExtend from 'deep-extend';
 const CONFIG_SCHEMA = {
   type: 'object',
   properties: {
-    refreshRate: { type: 'integer', minimum: 0 },
+    refreshCycle: { type: 'integer', minimum: 0 },
     sandbox: {
       type: 'object',
       properties: {
@@ -22,13 +22,15 @@ const CONFIG_SCHEMA = {
 };
 
 const CONFIG_DEFAULT = Object.freeze({
-  refreshRate: 60 * 60 * 1000,
+  refreshCycle: 60 * 60 * 1000,
   sandbox: Object.freeze({
     viewportWidth: 1280,
     viewportHeight: 800,
-    completionTimeout: 30 * 1000
+    completionTimeout: 30 * 1000,
   }),
-  sitemaps: Object.freeze([ ]),
+  sitemaps: Object.freeze([
+    'http://application:8888/sitemap.xml',
+  ]),
   baseUrl: 'http://application:8888/',
 });
 

@@ -1,35 +1,34 @@
 import { ArgumentParser } from 'argparse';
+import { MongoClient } from 'mongodb';
 import Config from './config.js';
 import Cache from './cache.js';
 import Service from './service.js';
 
 async function setup() {
-
+  // prepare parser
   const parser = new ArgumentParser({
     version: '0.0.1',
     addHelp: true,
     description: 'Ghostwriter Service'
   });
-
   parser.addArgument(
     [ '-p', '--port' ],
     { required: true, help: 'port' }
   );
   parser.addArgument(
-    [ '-config-db', '--config-database-uri' ],
-    { required: true, help: 'config database uri' }
+    [ '-db', '--database-uri' ],
+    { required: true, help: 'database uri' }
   );
-  parser.addArgument(
-    [ '-cache-db', '--cache-database-uri' ],
-    { required: true, help: 'cache database uri' }
-  );
-
+  // parse arguments
   const args = parser.parseArgs();
-
-  const config = await (new Config).initialize(args.config_database_uri);
-  const cache = await (new Cache).initialize(args.cache_database_uri);
-
-  return new Service(args.port, config, cache);
+  // connect to database
+  const db = await MongoClient.connect(args.database_uri);
+  // initialize service
+  return new Service(
+    args.port,
+    new Config(db.collection('config')),
+    new Cache(db.collection('cache'))
+  );
 }
 
 setup()

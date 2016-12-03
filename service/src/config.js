@@ -21,35 +21,51 @@ const CONFIG_SCHEMA = {
   }
 };
 
+const CONFIG_DEFAULT = Object.freeze({
+  refreshRate: 60 * 60 * 1000,
+  sandbox: Object.freeze({
+    viewportWidth: 1280,
+    viewportHeight: 800,
+    completionTimeout: 30 * 1000
+  }),
+  sitemaps: Object.freeze([ ]),
+  baseUrl: 'http://application:8888/',
+});
+
 export default class Config {
 
-  constructor() {
-    this._config = {
-      refreshRate: 60 * 60 * 1000,
-      sandbox: {
-        viewportWidth: 1280,
-        viewportHeight: 800,
-        completionTimeout: 30 * 1000
-      },
-      sitemaps: [ ],
-      baseUrl: 'http://application:8888/',
-    };
-  }
-
-  async initialize(dbUri) {
-    return this;
+  constructor(collection) {
+    this._collection = collection;
   }
 
   async retrieve(token) {
-    return deepExtend({ }, this._config, { token });
+    // retrieve current config...
+    let config = await this._collection.findOne({ _id: token });
+    if(config) {
+      config.token = config._id;
+      delete config._id;
+      return config;
+    }
+    // ... or use default one
+    return deepExtend({ }, CONFIG_DEFAULT, { token });
   }
 
   async update(token, update) {
-    if(validate(update, CONFIG_SCHEMA).valid) {
-      this._config = deepExtend({ }, this._config, update);
-    }
-    else {
+    // validate schema
+    if(!validate(update, CONFIG_SCHEMA).valid) {
       throw new Error('invalid configuration update');
     }
+    // retrieve current config
+    let config = await this.retrieve(token);
+    delete config.token;
+    // update config
+    config = deepExtend({ }, config, update);
+    // store updated config in database
+    await this._collection.findAndModify(
+      { _id: token },
+      [[ '_id', 'asc' ]],
+      config,
+      { upsert: true }
+    );
   }
 };

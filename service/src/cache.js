@@ -2,11 +2,12 @@ import { crawl } from './crawler.js';
 
 export default class Cache {
 
-  constructor(dbUri) {
+  constructor() {
     this._cache = { };
   }
 
-  async initialize() {
+  async initialize(dbUri) {
+    return this;
   }
 
   async retrievePage(config, url) {

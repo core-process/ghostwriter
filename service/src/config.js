@@ -23,7 +23,7 @@ const CONFIG_SCHEMA = {
 
 export default class Config {
 
-  constructor(dbUri) {
+  constructor() {
     this._config = {
       refreshRate: 60 * 60 * 1000,
       sandbox: {
@@ -36,7 +36,8 @@ export default class Config {
     };
   }
 
-  async initialize() {
+  async initialize(dbUri) {
+    return this;
   }
 
   async retrieve(token) {

@@ -3,9 +3,9 @@ import Config from './config.js';
 import Cache from './cache.js';
 import Service from './service.js';
 
-async function main() {
+async function setup() {
 
-  let parser = new ArgumentParser({
+  const parser = new ArgumentParser({
     version: '0.0.1',
     addHelp: true,
     description: 'Ghostwriter Service'
@@ -24,18 +24,15 @@ async function main() {
     { required: true, help: 'cache database uri' }
   );
 
-  let args = parser.parseArgs();
+  const args = parser.parseArgs();
 
-  const config = new Config(args.config_database_uri);
-  await config.initialize();
+  const config = await (new Config).initialize(args.config_database_uri);
+  const cache = await (new Cache).initialize(args.cache_database_uri);
 
-  const cache = new Cache(args.cache_database_uri);
-  await cache.initialize();
-
-  new Service(args.port, config, cache);
+  return new Service(args.port, config, cache);
 }
 
-main()
+setup()
   .catch(function(e) {
     console.log('error:', e.message || 'unknown');
   });

@@ -1,8 +1,7 @@
 {
-  "name": "ghostwriter-middleware",
+  "name": "ghostwriter-common",
   "version": "1.0.0",
   "description": "",
-  "main": "module.js",
   "scripts": {
     "build": "babel src --out-dir build --source-maps --copy-files",
     "build-watch": "babel src --out-dir build --source-maps --copy-files --watch",

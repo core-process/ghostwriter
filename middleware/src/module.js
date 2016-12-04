@@ -1,6 +1,9 @@
 import _ from 'underscore';
 import request from 'request-promise';
 import querystring from 'querystring';
+import { validate } from 'jsonschema';
+
+import CONFIG_SCHEMA from 'ghostwriter-common/build/config-schema.js';
 
 export default function(config) {
   // strip token, urlTest and serviceUrl from configuration
@@ -46,6 +49,10 @@ export default function(config) {
   }
   else {
     throw new Error('invalid urlTest');
+  }
+  // verify configuration
+  if(!validate(config, CONFIG_SCHEMA).valid) {
+    throw new Error('invalid configuration');
   }
   // retrievePage function
   let configApplied = false;

@@ -127,7 +127,7 @@ function serializeText (node) {
  */
 
 function serializeComment (node) {
-  return ''; // lets skip comments
+  return '<!--' + node.nodeValue + '-->';
 }
 
 /**

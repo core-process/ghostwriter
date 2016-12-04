@@ -33,14 +33,15 @@ export default class Service {
       // update configuration
       await this.config.update(request.query.token, request.body);
       // send response
-      response.sendStatus(200);
+      response
+        .status(200)
+        .json({});
     }
-    catch(e) {
+    catch(error) {
       // send response
       response
         .status(500)
-        .type('application/json')
-        .send(e.message || 'an unknown error occured');
+        .json(error);
     }
   }
 
@@ -55,14 +56,15 @@ export default class Service {
         await this.config.retrieve(request.query.token)
       );
       // send response
-      response.sendStatus(200);
+      response
+        .status(200)
+        .json({});
     }
-    catch(e) {
+    catch(error) {
       // send response
       response
         .status(500)
-        .type('application/json')
-        .send(e.message || 'an unknown error occured');
+        .json(error);
     }
   }
 
@@ -83,15 +85,13 @@ export default class Service {
       // send response
       response
         .status(200)
-        .type('text/html')
-        .send(page.content);
+        .json(page);
     }
-    catch(e) {
+    catch(error) {
       // send response
       response
         .status(500)
-        .type('application/json')
-        .send(e.message || 'an unknown error occured');
+        .json(error);
     }
   }
 };

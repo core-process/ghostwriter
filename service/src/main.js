@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { ArgumentParser } from 'argparse';
 import { MongoClient } from 'mongodb';
 import Config from './config.js';

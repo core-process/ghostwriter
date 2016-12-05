@@ -13,7 +13,7 @@ export default class Service {
     app.use(morgan('combined'));
     app.use(bodyParser.json());
     // install routes
-    app.get('/configure', this.configureRoute.bind(this));
+    app.post('/configure', this.configureRoute.bind(this));
     app.get('/clear-cache', this.clearCacheRoute.bind(this));
     app.get('/retrieve-page', this.retrievePageRoute.bind(this));
     // listen

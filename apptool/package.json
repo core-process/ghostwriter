@@ -1,6 +1,6 @@
 {
   "name": "ghostwriter-apptool",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "build/module.js",
   "scripts": {
@@ -29,5 +29,8 @@
     "underscore": "^1.8.3",
     "void-elements": "^2.0.1",
     "xregexp": "^3.1.1"
+  },
+  "peerDependencies": {
+    "babel-runtime": "^6.18.0"
   }
 }

@@ -1,27 +1,32 @@
 FROM node:7
 
-RUN mkdir -p /app
-WORKDIR /app
+RUN mkdir -p /app/common && mkdir -p /app/service/node_modules
 
-# add your application critical run time files
-# don't add your .git folder ;)
-COPY ./src               /app/src
-COPY ./.babelrc          /app/.babelrc
-COPY ./package.json      /app/package.json
+COPY ./common/src           /app/common/src
+COPY ./common/.babelrc      /app/common/.babelrc
+COPY ./common/package.json  /app/common/package.json
 
-# install dependencies and build software
+COPY ./service/src          /app/service/src
+COPY ./service/.babelrc     /app/service/.babelrc
+COPY ./service/package.json /app/service/package.json
+
+RUN ln -s /app/common /app/service/node_modules/ghostwriter-common
+
+WORKDIR /app/common
 RUN npm install
 RUN npm run build
 
-# cleanup sourcecode
-RUN rm -r -f /app/src
+WORKDIR /app/service
+RUN npm install
+RUN npm run build
 
-# start your application
+RUN rm -r -f /app/common/src
+RUN rm -r -f /app/service/src
+
+WORKDIR /app/service
 CMD [ "npm", "start", "--", \
   "--port", "8888", \
   "--database-uri", "mongodb://database:27017/ghostwriter" \
 ]
 
-# expose the port the application listens on, used later in
-# the docker-compose file
 EXPOSE 8888

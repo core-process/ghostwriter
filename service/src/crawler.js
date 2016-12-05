@@ -3,6 +3,7 @@ import tmp from 'tmp';
 import path from 'path';
 import fs from 'fs';
 import URI from 'urijs';
+import request from 'request-promise';
 
 export async function crawl(config, url) {
   console.log('*** ghostwriter:', 'crawling url', url);
@@ -12,6 +13,16 @@ export async function crawl(config, url) {
       url = url.absoluteTo(config.baseUrl);
   }
   url = url.toString();
+  // check content type first
+  const checkResponse = await request({
+    simple: true,
+    method: 'GET',
+    uri: url,
+    resolveWithFullResponse: true,
+  });
+  if(checkResponse.headers['content-type'] != 'text/html') {
+    throw new Error('requested url is not text/html');
+  }
   // create tmp files
   const tmpContent = tmp.fileSync({ mode: 0o644, prefix: 'ghostwriter-', postfix: '.content' });
   // execute phantomjs script

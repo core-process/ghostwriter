@@ -39,6 +39,8 @@
     "mongodb": "^2.2.12",
     "morgan": "^1.7.0",
     "phantomjs-prebuilt": "^2.1.13",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
     "tmp": "0.0.31",
     "urijs": "^1.18.3"
   }

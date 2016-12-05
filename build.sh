@@ -70,7 +70,11 @@ fi
 
 if [ "$ENABLE_DOCKER" = true ]; then
   cd "$ROOT_DIR"
-  docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest --no-cache ./
+  if [ "$ENABLE_REBUILD" = true ]; then
+    docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest --no-cache ./
+  else
+    docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest ./
+  fi
   if [ "$ENABLE_PUBLISH" = true ]; then
     docker push quay.io/process_team/ghostwriter-service:latest
   fi

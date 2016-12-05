@@ -36,13 +36,15 @@ done
 
 if [ "$ENABLE_PUBLISH" = true ]; then
   cd "$ROOT_DIR/common"
-  npm version "$ENABLE_PUBLISH_BUMP"
+  npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cd "$ROOT_DIR/apptool"
-  npm version "$ENABLE_PUBLISH_BUMP"
+  npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cd "$ROOT_DIR/middleware"
-  npm version "$ENABLE_PUBLISH_BUMP"
+  npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cd "$ROOT_DIR/service"
   ENABLE_PUBLISH_VERSION=$(npm version "$ENABLE_PUBLISH_BUMP")
+  cd "$ROOT_DIR"
+  git commit -a -m "Bump to version $ENABLE_PUBLISH_VERSION"
 fi
 
 cd "$ROOT_DIR/common"
@@ -104,8 +106,4 @@ if [ "$ENABLE_DOCKER" = true ]; then
 fi
 
 cd "$ROOT_DIR"
-if [ "$ENABLE_PUBLISH" = true ]; then
-  git commit -m "Bump to version $ENABLE_PUBLISH_VERSION"
-fi
-
 echo "Done!"

@@ -4,7 +4,10 @@ export default class Cache {
 
   constructor(collection) {
     this._collection = collection;
-    this._collection.ensureIndex({ token: 1, url: 1 })
+    this._collection.ensureIndex(
+      { token: 1, url: 1 },
+      { unique: true, dropDups: true, w: 'majority' }
+    )
       .catch((error) => {
         console.log(
           'error: could not create index on cache collection. - ',
@@ -25,7 +28,11 @@ export default class Cache {
         timestamp: Date.now(),
         content: await crawl(config, url)
       };
-      await this._collection.insertOne(page);
+      await this._collection.updateOne(
+        { token: page.token, url: page.url },
+        page,
+        { upsert: true, w: 'majority' }
+      );
     }
     // update page in background if required
     else if((page.timestamp + config.refreshCycle) < Date.now()) {
@@ -34,7 +41,11 @@ export default class Cache {
         .then((content) => {
           page.timestamp = Date.now();
           page.content = content;
-          return this._collection.updateOne({ _id: page._id }, page);
+          return this._collection.updateOne(
+            { token: page.token, url: page.url },
+            page,
+            { upsert: true, w: 'majority' }
+          );
         })
         .catch((error) => {
           console.log('*** ghostwriter:', 'background crawling failed', url);
@@ -46,6 +57,6 @@ export default class Cache {
 
   async clear(config) {
     // remove all cached pages of token
-    await this._collection.remove({ token: config.token });
+    await this._collection.remove({ token: config.token }, { w: 'majority' });
   }
 };

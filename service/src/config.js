@@ -49,7 +49,7 @@ export default class Config {
       { _id: token },
       [[ '_id', 'asc' ]],
       config,
-      { upsert: true }
+      { upsert: true, w: 'majority' }
     );
   }
 };

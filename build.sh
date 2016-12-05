@@ -16,24 +16,28 @@ do
 done
 
 cd "$ROOT_DIR/common"
+rm -r -f build
 npm run build
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish
 fi
 
 cd "$ROOT_DIR/apptool"
+rm -r -f build
 npm run build
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish
 fi
 
 cd "$ROOT_DIR/middleware"
+rm -r -f build
 npm run build
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish
 fi
 
 cd "$ROOT_DIR/service"
+rm -r -f build
 npm run build
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish

@@ -2,13 +2,13 @@ FROM node:7
 
 RUN mkdir -p /app/common && mkdir -p /app/service/node_modules
 
-COPY ./common/src           /app/common/src
-COPY ./common/.babelrc      /app/common/.babelrc
-COPY ./common/package.json  /app/common/package.json
-
-COPY ./service/src          /app/service/src
-COPY ./service/.babelrc     /app/service/.babelrc
-COPY ./service/package.json /app/service/package.json
+WORKDIR /app
+COPY common/src           common/src
+COPY common/.babelrc      common/.babelrc
+COPY common/package.json  common/package.json
+COPY service/src          service/src
+COPY service/.babelrc     service/.babelrc
+COPY service/package.json service/package.json
 
 RUN ln -s /app/common /app/service/node_modules/ghostwriter-common
 

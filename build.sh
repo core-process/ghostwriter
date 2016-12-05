@@ -4,6 +4,8 @@ set -e
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ENABLE_PUBLISH=false
+ENABLE_PUBLISH_BUMP="patch"
+ENABLE_PUBLISH_VERSION="unknown"
 ENABLE_DOCKER=false
 ENABLE_REBUILD=false
 
@@ -19,10 +21,25 @@ do
     -p|--publish)
       ENABLE_PUBLISH=true
     ;;
+    -p=*|--publish=*)
+      ENABLE_PUBLISH=true
+      ENABLE_PUBLISH_BUMP="${i#*=}"
+    ;;
     *)
     ;;
   esac
 done
+
+if [ "$ENABLE_PUBLISH" = true ]; then
+  cd "$ROOT_DIR/common"
+  npm version "$ENABLE_PUBLISH_BUMP"
+  cd "$ROOT_DIR/apptool"
+  npm version "$ENABLE_PUBLISH_BUMP"
+  cd "$ROOT_DIR/middleware"
+  npm version "$ENABLE_PUBLISH_BUMP"
+  cd "$ROOT_DIR/service"
+  ENABLE_PUBLISH_VERSION=$(npm version "$ENABLE_PUBLISH_BUMP")
+fi
 
 cd "$ROOT_DIR/common"
 if [ "$ENABLE_REBUILD" = true ]; then
@@ -81,4 +98,8 @@ if [ "$ENABLE_DOCKER" = true ]; then
 fi
 
 cd "$ROOT_DIR"
+if [ "$ENABLE_PUBLISH" = true ]; then
+  git commit -m "Bump to version $ENABLE_PUBLISH_VERSION"
+fi
+
 echo "Done!"

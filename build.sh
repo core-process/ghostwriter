@@ -38,6 +38,8 @@ npm run build
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish
 fi
+
+cd "$ROOT_DIR"
 docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest --no-cache ./
 if [ "$ENABLE_PUBLISH" = true ]; then
   docker push quay.io/process_team/ghostwriter-service:latest

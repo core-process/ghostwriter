@@ -41,7 +41,7 @@ export default class Service {
       // send response
       response
         .status(500)
-        .json(error);
+        .json({ error: error.message || 'unknown error' });
     }
   }
 
@@ -64,7 +64,7 @@ export default class Service {
       // send response
       response
         .status(500)
-        .json(error);
+        .json({ error: error.message || 'unknown error' });
     }
   }
 
@@ -91,7 +91,7 @@ export default class Service {
       // send response
       response
         .status(500)
-        .json(error);
+        .json({ error: error.message || 'unknown error' });
     }
   }
 };

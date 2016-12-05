@@ -20,8 +20,11 @@ export async function crawl(config, url) {
     uri: url,
     resolveWithFullResponse: true,
   });
-  if(checkResponse.headers['content-type'] != 'text/html') {
-    throw new Error('requested url is not text/html');
+  const checkContentType = checkResponse.headers['content-type'] || '';
+  if(  checkContentType != 'text/html'
+    && checkContentType.indexOf('text/html;') !== 0
+  ) {
+    throw new Error('requested url is not text/html, provided: ' + checkResponse.headers['content-type']);
   }
   // create tmp files
   const tmpContent = tmp.fileSync({ mode: 0o644, prefix: 'ghostwriter-', postfix: '.content' });

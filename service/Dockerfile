@@ -1,4 +1,5 @@
 FROM node:7
+ENV DATABASE_URI=mongodb://database:27017/ghostwriter
 
 RUN mkdir -p /app/common && mkdir -p /app/service/node_modules
 
@@ -24,9 +25,6 @@ RUN rm -r -f /app/common/src
 RUN rm -r -f /app/service/src
 
 WORKDIR /app/service
-CMD [ "npm", "start", "--", \
-  "--port", "8888", \
-  "--database-uri", "mongodb://database:27017/ghostwriter" \
-]
+CMD npm start -- --port 8888 --database-uri $DATABASE_URI
 
 EXPOSE 8888

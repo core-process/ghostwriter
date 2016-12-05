@@ -20,10 +20,14 @@ do
     ;;
     -p|--publish)
       ENABLE_PUBLISH=true
+      ENABLE_REBUILD=true
+      ENABLE_DOCKER=true
     ;;
     -p=*|--publish=*)
       ENABLE_PUBLISH=true
       ENABLE_PUBLISH_BUMP="${i#*=}"
+      ENABLE_REBUILD=true
+      ENABLE_DOCKER=true
     ;;
     *)
     ;;
@@ -93,7 +97,9 @@ if [ "$ENABLE_DOCKER" = true ]; then
     docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest ./
   fi
   if [ "$ENABLE_PUBLISH" = true ]; then
+    docker tag quay.io/process_team/ghostwriter-service:latest quay.io/process_team/ghostwriter-service:$ENABLE_PUBLISH_VERSION
     docker push quay.io/process_team/ghostwriter-service:latest
+    docker push quay.io/process_team/ghostwriter-service:$ENABLE_PUBLISH_VERSION
   fi
 fi
 

@@ -44,6 +44,7 @@ export default class SitemapCrawler {
     await new Promise((resolve, reject) => {
       setTimeout(() => resolve(), 30 * 60 * 1000);
     });
+    this.crawlSitemaps(); // continue running in background
   }
 
   async crawlSitemap(config, sitemapUrl) {

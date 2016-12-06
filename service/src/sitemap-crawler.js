@@ -1,5 +1,17 @@
 import request from 'request-promise';
 import * as xml2js from 'xml2js';
+import URI from 'urijs';
+
+function readjustUrl(url, baseUrl) {
+  return URI(url)
+    .protocol(null)
+    .username(null)
+    .password(null)
+    .hostname(null)
+    .port(null)
+    .absoluteTo(baseUrl)
+    .toString();
+}
 
 export default class SitemapCrawler {
 
@@ -58,7 +70,10 @@ export default class SitemapCrawler {
         if(entry['loc'] instanceof Array) {
           const subSitemapUrl = entry['loc'].join('');
           try {
-            await this.crawlSitemap(config, subSitemapUrl);
+            await this.crawlSitemap(
+              config,
+              readjustUrl(subSitemapUrl, config.baseUrl)
+            );
           }
           catch(error) {
             console.log(
@@ -77,7 +92,11 @@ export default class SitemapCrawler {
         if(entry['loc'] instanceof Array) {
           const pageUrl = entry['loc'].join('');
           try {
-            await this._cache.retrievePage(config, pageUrl, false);
+            await this._cache.retrievePage(
+              config,
+              readjustUrl(pageUrl, config.baseUrl),
+              false
+            );
           }
           catch(error) {
             console.log(

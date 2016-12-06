@@ -37,12 +37,16 @@ done
 if [ "$ENABLE_PUBLISH" = true ]; then
   cd "$ROOT_DIR/common"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
+  cp ../readme.md readme.md
   cd "$ROOT_DIR/apptool"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
+  cp ../readme.md readme.md
   cd "$ROOT_DIR/middleware"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
+  cp ../readme.md readme.md
   cd "$ROOT_DIR/service"
   ENABLE_PUBLISH_VERSION=$(npm version "$ENABLE_PUBLISH_BUMP")
+  cp ../readme.md readme.md
   cd "$ROOT_DIR"
   git commit -a -m "Bump to version $ENABLE_PUBLISH_VERSION"
 fi

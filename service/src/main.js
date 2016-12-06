@@ -4,6 +4,7 @@ import { ArgumentParser } from 'argparse';
 import { MongoClient } from 'mongodb';
 import Config from './config.js';
 import Cache from './cache.js';
+import SitemapCrawler from './sitemap-crawler.js';
 import Service from './service.js';
 
 async function setup() {
@@ -25,11 +26,19 @@ async function setup() {
   const args = parser.parseArgs();
   // connect to database
   const db = await MongoClient.connect(args.database_uri);
-  // initialize service
-  return new Service(
+  // initialize web service and sitemap crawler
+  const
+    config = new Config(db.collection('config')),
+    cache = new Cache(db.collection('page'));
+  new Service(
     args.port,
-    new Config(db.collection('config')),
-    new Cache(db.collection('cache'))
+    config,
+    cache
+  );
+  new SitemapCrawler(
+    db.collection('sitemap'),
+    config,
+    cache
   );
 }
 

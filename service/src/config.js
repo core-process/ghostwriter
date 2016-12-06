@@ -1,5 +1,6 @@
 import { validate } from 'jsonschema';
 import deepExtend from 'deep-extend';
+import _ from 'underscore';
 
 import CONFIG_SCHEMA from 'ghostwriter-common/build/config-schema.js';
 
@@ -18,13 +19,13 @@ const CONFIG_DEFAULT = Object.freeze({
 
 export default class Config {
 
-  constructor(collection) {
-    this._collection = collection;
+  constructor(configCollection) {
+    this._configCollection = configCollection;
   }
 
   async retrieve(token) {
     // retrieve current config...
-    let config = await this._collection.findOne({ _id: token });
+    let config = await this._configCollection.findOne({ _id: token });
     if(config) {
       config.token = config._id;
       delete config._id;
@@ -32,6 +33,13 @@ export default class Config {
     }
     // ... or use default one
     return deepExtend({ }, CONFIG_DEFAULT, { token });
+  }
+
+  async retrieveAll() {
+    let configs = await this._configCollection.find().toArray();
+    return configs.map(
+      (config) => _.extend({ }, _.omit(config, '_id'), { token: config._id })
+    );
   }
 
   async update(token, update) {
@@ -45,7 +53,7 @@ export default class Config {
     // update config
     config = deepExtend({ }, config, update);
     // store updated config in database
-    await this._collection.findAndModify(
+    await this._configCollection.findAndModify(
       { _id: token },
       [[ '_id', 'asc' ]],
       config,

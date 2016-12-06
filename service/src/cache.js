@@ -2,33 +2,35 @@ import { crawl } from './crawler.js';
 
 export default class Cache {
 
-  constructor(collection) {
-    this._collection = collection;
-    this._collection.ensureIndex(
+  constructor(pageCollection) {
+    this._pageCollection = pageCollection;
+    this._pageCollection.ensureIndex(
       { token: 1, url: 1 },
       { unique: true, dropDups: true, w: 'majority' }
     )
       .catch((error) => {
         console.log(
-          'error: could not create index on cache collection. - ',
+          'error: could not create index on cache pageCollection. - ',
           error.message
         );
       });
   }
 
-  async retrievePage(config, url) {
+  async retrievePage(config, url, forceCrawl = false) {
     console.log('*** ghostwriter:', 'loading url', url);
     // retrieve page from cache if it exists
-    let page = await this._collection.findOne({ token: config.token, url });
+    let page = await this._pageCollection.findOne(
+      { token: config.token, url }
+    );
     // crawl page if required
-    if(!page) {
+    if(!page || forceCrawl) {
       page = {
         token: config.token,
         url: url,
         timestamp: Date.now(),
         content: await crawl(config, url)
       };
-      await this._collection.updateOne(
+      await this._pageCollection.updateOne(
         { token: page.token, url: page.url },
         page,
         { upsert: true, w: 'majority' }
@@ -41,7 +43,7 @@ export default class Cache {
         .then((content) => {
           page.timestamp = Date.now();
           page.content = content;
-          return this._collection.updateOne(
+          return this._pageCollection.updateOne(
             { token: page.token, url: page.url },
             page,
             { upsert: true, w: 'majority' }
@@ -57,6 +59,9 @@ export default class Cache {
 
   async clear(config) {
     // remove all cached pages of token
-    await this._collection.remove({ token: config.token }, { w: 'majority' });
+    await this._pageCollection.remove(
+      { token: config.token },
+      { w: 'majority' }
+    );
   }
 };

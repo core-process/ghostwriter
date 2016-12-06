@@ -3,13 +3,13 @@ import * as xml2js from 'xml2js';
 import URI from 'urijs';
 
 function readjustUrl(url, baseUrl) {
+  baseUrl = URI(baseUrl);
   return URI(url)
-    .protocol(null)
-    .username(null)
-    .password(null)
-    .hostname(null)
-    .port(null)
-    .absoluteTo(baseUrl)
+    .protocol(baseUrl.protocol())
+    .username(baseUrl.username())
+    .password(baseUrl.password())
+    .hostname(baseUrl.hostname())
+    .port(baseUrl.port())
     .toString();
 }
 
@@ -24,7 +24,7 @@ export default class SitemapCrawler {
 
   async crawlSitemaps() {
     await new Promise((resolve, reject) => {
-      setTimeout(() => resolve(), 10 * 1000);
+      setTimeout(() => resolve(), 1 * 60 * 1000);
     });
     const configs = await this._config.retrieveAll();
     for(let config of configs) {
@@ -40,6 +40,7 @@ export default class SitemapCrawler {
         }
       }
     }
+    console.log('*** ghostwriter.sitemapCrawler:', 'done crawling sitemaps');
     await new Promise((resolve, reject) => {
       setTimeout(() => resolve(), 30 * 60 * 1000);
     });
@@ -57,23 +58,36 @@ export default class SitemapCrawler {
         'User-Agent': 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter)',
       },
     });
+    console.log('content type:', sitemapResponse.headers['content-type']);
     // check if content type fits
     if(sitemapResponse.headers['content-type'] != 'application/xml') {
       throw new Error('invalid content type');
     }
     // parse xml
-    const sitemap = xml2js.parseString(sitemapResponse.body);
+    const sitemap = await new Promise((resolve, reject) => {
+      xml2js.parseString(sitemapResponse.body, (error, result) => {
+        if(error) {
+          reject(error);
+        }
+        else {
+          resolve(result);
+        }
+      });
+    });
     // check if it is intermediate sitemap or a final one
     if(  typeof sitemap['sitemapindex'] == 'object'
-      && typeof sitemap['sitemapindex']['sitemap'] instanceof Array
+      && sitemap['sitemapindex']['sitemap'] instanceof Array
     ) {
-      for(let entry of typeof sitemap['sitemapindex']['sitemap']) {
+      for(let entry of sitemap['sitemapindex']['sitemap']) {
         if(entry['loc'] instanceof Array) {
-          const subSitemapUrl = entry['loc'].join('');
+          const subSitemapUrl = readjustUrl(
+            entry['loc'].join(''),
+            config.baseUrl
+          );
           try {
             await this.crawlSitemap(
               config,
-              readjustUrl(subSitemapUrl, config.baseUrl)
+              subSitemapUrl
             );
           }
           catch(error) {
@@ -87,16 +101,19 @@ export default class SitemapCrawler {
     }
     else
     if(  typeof sitemap['urlset'] == 'object'
-      && typeof sitemap['urlset']['url'] instanceof Array
+      && sitemap['urlset']['url'] instanceof Array
     ) {
-      for(let entry of typeof sitemap['urlset']['url']) {
+      for(let entry of sitemap['urlset']['url']) {
         if(entry['loc'] instanceof Array) {
-          const pageUrl = entry['loc'].join('');
+          const pageUrl = readjustUrl(
+            entry['loc'].join(''),
+            config.baseUrl
+          );
           try {
             console.log('*** ghostwriter.sitemapCrawler:', 'caching page', pageUrl);
             await this._cache.retrievePage(
               config,
-              readjustUrl(pageUrl, config.baseUrl),
+              pageUrl,
               false
             );
           }
@@ -108,6 +125,9 @@ export default class SitemapCrawler {
           }
         }
       }
+    }
+    else {
+      console.log('invalid sitemap:', JSON.stringify(sitemap));
     }
   }
 

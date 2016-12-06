@@ -24,7 +24,7 @@ export default class SitemapCrawler {
 
   async crawlSitemaps() {
     await new Promise((resolve, reject) => {
-      setTimeout(() => resolve(), 1 * 60 * 1000);
+      setTimeout(() => resolve(), 10 * 1000);
     });
     const configs = await this._config.retrieveAll();
     for(let config of configs) {
@@ -46,6 +46,7 @@ export default class SitemapCrawler {
   }
 
   async crawlSitemap(config, sitemapUrl) {
+    console.log('*** ghostwriter.sitemapCrawler:', 'crawling sitemap', sitemapUrl);
     // retrieve sitemap
     const sitemapResponse = await request({
       simple: true,
@@ -92,6 +93,7 @@ export default class SitemapCrawler {
         if(entry['loc'] instanceof Array) {
           const pageUrl = entry['loc'].join('');
           try {
+            console.log('*** ghostwriter.sitemapCrawler:', 'caching page', pageUrl);
             await this._cache.retrievePage(
               config,
               readjustUrl(pageUrl, config.baseUrl),

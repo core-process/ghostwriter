@@ -106,12 +106,11 @@ export default class SitemapCrawler {
     ) {
       for(let entry of sitemap['urlset']['url']) {
         if(entry['loc'] instanceof Array) {
-          const pageUrl = URI(readjustUrl(
-            entry['loc'].join(''),
-            config.baseUrl
-          ))
-            .relativeTo(config.baseUrl)
-            .toString();
+          const pageUrl =
+            '/' +
+            URI(readjustUrl(entry['loc'].join(''), config.baseUrl))
+              .relativeTo(config.baseUrl)
+              .toString();
           try {
             console.log('*** ghostwriter.sitemapCrawler:', 'caching page', pageUrl);
             await this._cache.retrievePage(

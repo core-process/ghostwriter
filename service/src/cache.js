@@ -16,14 +16,14 @@ export default class Cache {
       });
   }
 
-  async retrievePage(config, url, forceCrawl = false) {
+  async retrievePage(config, url, backgroundRefresh = true) {
     console.log('*** ghostwriter:', 'loading url', url);
     // retrieve page from cache if it exists
     let page = await this._pageCollection.findOne(
       { token: config.token, url }
     );
     // crawl page if required
-    if(!page || forceCrawl) {
+    if(!page) {
       page = {
         token: config.token,
         url: url,
@@ -39,19 +39,32 @@ export default class Cache {
     // update page in background if required
     else if((page.timestamp + config.refreshCycle) < Date.now()) {
       console.log('*** ghostwriter:', 'background crawling url', url);
-      crawl(config, url)
-        .then((content) => {
-          page.timestamp = Date.now();
-          page.content = content;
-          return this._pageCollection.updateOne(
-            { token: page.token, url: page.url },
-            page,
-            { upsert: true, w: 'majority' }
-          );
-        })
-        .catch((error) => {
-          console.log('*** ghostwriter:', 'background crawling failed', url);
-        });
+      if(backgroundRefresh) {
+        crawl(config, url)
+          .then((content) => {
+            page.timestamp = Date.now();
+            page.content = content;
+            return this._pageCollection.updateOne(
+              { token: page.token, url: page.url },
+              page,
+              { upsert: true, w: 'majority' }
+            );
+          })
+          .catch((error) => {
+            console.log('*** ghostwriter:', 'background crawling failed', url);
+          });
+      }
+      else {
+        const content = await crawl(config, url);
+        page.timestamp = Date.now();
+        page.content = content;
+        await this._pageCollection.updateOne(
+          { token: page.token, url: page.url },
+          page,
+          { upsert: true, w: 'majority' }
+        );
+        console.log('*** ghostwriter:', 'background crawling failed', url);
+      }
     }
     // done
     return page;

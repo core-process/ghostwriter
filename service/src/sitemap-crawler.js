@@ -1,6 +1,5 @@
 import request from 'request-promise';
 import * as xml2js from 'xml2js';
-import { crawl } from './crawler.js';
 
 export default class SitemapCrawler {
 
@@ -8,9 +7,13 @@ export default class SitemapCrawler {
     this._sitemapCollection = sitemapCollection;
     this._config = config;
     this._cache = cache;
+    this.crawlSitemaps(); // run in background
   }
 
   async crawlSitemaps() {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), 1 * 60 * 1000);
+    });
     const configs = await this._config.retrieveAll();
     for(let config of configs) {
       for(let sitemapUrl of config.sitemaps) {
@@ -25,6 +28,9 @@ export default class SitemapCrawler {
         }
       }
     }
+    await new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), 30 * 60 * 1000);
+    });
   }
 
   async crawlSitemap(config, sitemapUrl) {
@@ -71,7 +77,7 @@ export default class SitemapCrawler {
         if(entry['loc'] instanceof Array) {
           const pageUrl = entry['loc'].join('');
           try {
-            await crawl(config, pageUrl, true);
+            await this._cache.retrievePage(config, pageUrl, false);
           }
           catch(error) {
             console.log(

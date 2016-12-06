@@ -36,7 +36,6 @@ async function setup() {
     cache
   );
   new SitemapCrawler(
-    db.collection('sitemap'),
     config,
     cache
   );

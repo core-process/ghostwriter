@@ -15,8 +15,7 @@ function readjustUrl(url, baseUrl) {
 
 export default class SitemapCrawler {
 
-  constructor(sitemapCollection, config, cache) {
-    this._sitemapCollection = sitemapCollection;
+  constructor(config, cache) {
     this._config = config;
     this._cache = cache;
     this.crawlSitemaps(); // run in background

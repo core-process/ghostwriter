@@ -1,6 +1,6 @@
 {
   "name": "ghostwriter-middleware",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "build/module.js",
   "scripts": {

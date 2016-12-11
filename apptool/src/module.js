@@ -8,32 +8,6 @@ export function sandbox() {
   return _sandbox;
 }
 
-// request tracking
-const ACTIVITY_TIMEOUT = 1 * 1000;
-
-const now = (performance && performance.now)
-  ? () => performance.now()
-  : () => Date.now();
-
-let tracking = {
-  pending: 0,
-  activity: now()
-};
-
-const XMLHttpRequest_open = XMLHttpRequest.prototype.open;
-
-XMLHttpRequest.prototype.open = function (method, url, async_, user, pass) {
-  tracking.pending++;
-  tracking.activity = now();
-  this.addEventListener("readystatechange", function () {
-      if(this.readyState == 4) {
-        tracking.pending--;
-        tracking.activity = now();
-      }
-    }, false);
-  XMLHttpRequest_open.call(this, method, url, async_, user, pass);
-}
-
 // setup function
 let _status = null;
 
@@ -75,11 +49,7 @@ export function completed() {
     _.keys(_status),
     (token) => !_status[token]
   ).length == 0;
-  // check if there are no pending requests
-  if(  !ready
-    || tracking.pending > 0
-    || (now() - tracking.activity) < ACTIVITY_TIMEOUT
-  ) {
+  if(!ready) {
     return false;
   }
   // check if all images are loaded
@@ -100,7 +70,9 @@ if(sandbox()) {
         check();
       }
       else {
-        window.___ghostwriterSource = serialize(document);
+        setTimeout(() => {
+          window.___ghostwriterSource = serialize(document);
+        }, 1000);
       }
     }, 5);
   })();

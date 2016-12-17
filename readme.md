@@ -26,7 +26,8 @@ $ npm install --save ghostwriter-apptools
 // setup ghostwriter middleware (for express)
 import ghostwriter from 'ghostwriter-middleware';
 app.use(ghostwriter({
-  token: 'bd7a1578-865e-463e-9049-fc1fe4319574',  // choose a unique id
+  token: 'bd7a1578-865e-463e-9049-fc1fe4319574',  // choose a unique app id
+  version: 'da39a3ee5e6b4b0d3255bfef95601890afd80709', // e.g. git commit id
   urlTest: (url) => !url.startsWith('/api'),
   serviceUrl: 'http://localhost:8887',
   baseUrl: 'http://localhost:8888',

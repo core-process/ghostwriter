@@ -70,7 +70,6 @@ export default class Cache {
           page,
           { upsert: true, w: 'majority' }
         );
-        console.log('*** ghostwriter:', 'crawling failed', url);
       }
     }
     // done

@@ -1,6 +1,7 @@
 const CONFIG_SCHEMA = {
   type: 'object',
   properties: {
+    version: { type: 'string' },
     refreshCycle: { type: 'integer', minimum: 0 },
     sandbox: {
       type: 'object',

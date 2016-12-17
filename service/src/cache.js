@@ -28,6 +28,7 @@ export default class Cache {
         token: config.token,
         url: url,
         timestamp: Date.now(),
+        version: config.version,
         content: await crawl(config, url)
       };
       await this._pageCollection.updateOne(
@@ -37,12 +38,16 @@ export default class Cache {
       );
     }
     // update page in background if required
-    else if((page.timestamp + config.refreshCycle) < Date.now()) {
-      console.log('*** ghostwriter:', 'background crawling url', url);
-      if(backgroundRefresh) {
+    else
+    if(  (page.timestamp + config.refreshCycle) < Date.now()
+      || page.version != config.version
+    ) {
+      if(backgroundRefresh && page.version == config.version) {
+        console.log('*** ghostwriter:', 'background crawling url', url);
         crawl(config, url)
           .then((content) => {
             page.timestamp = Date.now();
+            page.version = config.version;
             page.content = content;
             return this._pageCollection.updateOne(
               { token: page.token, url: page.url },
@@ -55,15 +60,17 @@ export default class Cache {
           });
       }
       else {
+        console.log('*** ghostwriter:', 'foreground crawling url', url);
         const content = await crawl(config, url);
         page.timestamp = Date.now();
+        page.version = config.version;
         page.content = content;
         await this._pageCollection.updateOne(
           { token: page.token, url: page.url },
           page,
           { upsert: true, w: 'majority' }
         );
-        console.log('*** ghostwriter:', 'background crawling failed', url);
+        console.log('*** ghostwriter:', 'crawling failed', url);
       }
     }
     // done

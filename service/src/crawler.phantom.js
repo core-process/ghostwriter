@@ -1,13 +1,14 @@
 import webpage from 'webpage';
 import fs from 'fs';
 import system from 'system';
+import base64 from 'base-64';
 
-async function crawler(url, contentPath, viewportWidth, viewportHeight, completionTimeout) {
+async function crawler(url, target, contentPath, viewportWidth, viewportHeight, completionTimeout) {
   // create page
   const page = webpage.create();
   let httpCode = null;
   page.onResourceRequested = function(requestData, request) {
-    console.info('onResourceRequested', requestData['url']);
+    console.info('resource requested:', requestData['url']);
   };
   page.onResourceReceived = function(response) {
     if(response.url == url && response.stage == 'end') {
@@ -15,14 +16,14 @@ async function crawler(url, contentPath, viewportWidth, viewportHeight, completi
     }
   };
   page.onError = function(msg, trace) {
-    console.error('onError', msg);
+    console.error('error:', msg);
   };
   page.onResourceError = function(error) {
-    console.error('onResourceError', JSON.stringify(error));
+    console.error('resource error:', JSON.stringify(error));
   };
   // trigger page load
   console.log('loading url...');
-  page.settings.userAgent = 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter)';
+  page.settings.userAgent = 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter; target '+base64.encode(target)+')';
   page.viewportSize = { width: viewportWidth, height: viewportHeight };
   await new Promise((resolve, reject) => {
     page.open(url, (status) => {
@@ -68,17 +69,18 @@ async function crawler(url, contentPath, viewportWidth, viewportHeight, completi
   fs.write(contentPath, source, { charset: 'utf8' });
 };
 
-if(system.args.length != 6) {
-  console.error('usage: <program> <url> <contentPath> <viewportWidth> <viewportHeight> <completionTimeout>');
+if(system.args.length != 7) {
+  console.error('usage: <program> <url> <target> <contentPath> <viewportWidth> <viewportHeight> <completionTimeout>');
   phantom.exit(1);
 }
 else {
   crawler(
     system.args[1],
     system.args[2],
-    parseInt(system.args[3]),
+    system.args[3],
     parseInt(system.args[4]),
-    parseInt(system.args[5])
+    parseInt(system.args[5]),
+    parseInt(system.args[6])
   )
     .then(() => {
       phantom.exit(0);

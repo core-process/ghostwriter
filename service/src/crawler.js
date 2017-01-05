@@ -10,7 +10,7 @@ import adjustUrlBase from './adjust-url-base.js';
 export async function crawl(config, url, target) {
   // rebase url
   url = adjustUrlBase(url, config.appUrl);
-  console.log('*** ghostwriter:', 'crawling url', url);
+  console.log('*** ghostwriter:', 'crawling url', url, target);
   // check content type first
   const checkResponse = await request({
     simple: true,
@@ -32,7 +32,7 @@ export async function crawl(config, url, target) {
   // execute phantomjs script
   const script = phantomjs.exec(
     path.join(__dirname, 'crawler.phantom.js'),
-    url, tmpContent.name,
+    url, target, tmpContent.name,
     config.sandbox.viewportWidth,
     config.sandbox.viewportHeight,
     config.sandbox.completionTimeout

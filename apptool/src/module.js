@@ -14,7 +14,7 @@ let _target = 'standard';
 if(_sandbox) {
   let t = navigator.userAgent.match(/Ghostwriter\/[^(]*\(.*target\s([^\s;)]*)/);
   if(t) {
-    _target = atob(t);
+    _target = atob(t[1]);
   }
 }
 

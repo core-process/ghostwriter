@@ -64,7 +64,14 @@ function uriOrigin(uri) {
 
 function serializeAttribute (node) {
   var name = node.name, value = node.value;
+  if(name == 'data-ghostwriter-style') {
+    return '';
+  }
   if(name == 'style') {
+    const gwStyle = node.ownerElement.getAttribute('data-ghostwriter-style');
+    if(gwStyle) {
+      value += ' ' + gwStyle;
+    }
     var base = uriOrigin(node.ownerDocument.documentURI);
     value = value.replace(
       new RegExp('url\\('+xregexp.escape(base)+'(.*?)\\)', 'g'),

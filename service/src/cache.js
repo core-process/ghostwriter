@@ -70,7 +70,7 @@ export default class Cache {
         page.version = config.version;
         page.content = content;
         await this._pageCollection.updateOne(
-          { token: page.token, url: page.url },
+          { token: page.token, url: page.url, target },
           page,
           { upsert: true, w: 'majority' }
         );

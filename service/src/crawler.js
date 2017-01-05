@@ -4,15 +4,13 @@ import path from 'path';
 import fs from 'fs';
 import URI from 'urijs';
 import request from 'request-promise';
+import base64 from 'base-64';
+import adjustUrlBase from './adjust-url-base.js';
 
-export async function crawl(config, url) {
+export async function crawl(config, url, target) {
+  // rebase url
+  url = adjustUrlBase(url, config.appUrl);
   console.log('*** ghostwriter:', 'crawling url', url);
-  // finalize url
-  url = new URI(url);
-  if (url.is('relative')) {
-      url = url.absoluteTo(config.baseUrl);
-  }
-  url = url.toString();
   // check content type first
   const checkResponse = await request({
     simple: true,
@@ -20,7 +18,7 @@ export async function crawl(config, url) {
     uri: url,
     resolveWithFullResponse: true,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter)',
+      'User-Agent': 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter; target '+base64.encode(target)+')',
     },
   });
   const checkContentType = checkResponse.headers['content-type'] || '';

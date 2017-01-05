@@ -2,10 +2,24 @@ import _ from 'underscore';
 import serialize from './dom-serialize.js';
 
 // detect if we are in ghostwriter sandbox
-let _sandbox = navigator.userAgent.indexOf('Ghostwriter') !== -1;
+let _sandbox = navigator.userAgent.indexOf('+https://github.com/core-process/ghostwriter') !== -1;
 
 export function sandbox() {
   return _sandbox;
+}
+
+// detect taret if we are in ghostwriter sandbox
+let _target = 'standard';
+
+if(_sandbox) {
+  let t = navigator.userAgent.match(/Ghostwriter\/[^(]*\(.*target\s([^\s;)]*)/);
+  if(t) {
+    _target = atob(t);
+  }
+}
+
+export function target() {
+  return _target;
 }
 
 // setup function

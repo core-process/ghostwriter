@@ -12,9 +12,15 @@ const CONFIG_DEFAULT = Object.freeze({
     completionTimeout: 30 * 1000,
   }),
   sitemaps: Object.freeze([
-    'http://application:8888/sitemap.xml',
+    '/sitemap.xml',
   ]),
-  baseUrl: 'http://application:8888/',
+  targets: Object.freeze([
+    'standard',
+    'facebook',
+    'twitter',
+    'pinterest',
+  ]),
+  appUrl: 'http://application:8888',
 });
 
 export default class Config {

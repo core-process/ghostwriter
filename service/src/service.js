@@ -77,10 +77,14 @@ export default class Service {
       if(!request.query.pageUrl) {
         throw new Error('page-url missing');
       }
+      if(!request.query.target) {
+        throw new Error('target missing');
+      }
       // retrieve page
       const page = await this.cache.retrievePage(
         await this.config.retrieve(request.query.token),
-        request.query.pageUrl
+        request.query.pageUrl,
+        request.query.target
       );
       // send response
       response

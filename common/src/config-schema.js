@@ -15,7 +15,11 @@ const CONFIG_SCHEMA = {
       type: 'array',
       items: { type: 'string' },
     },
-    baseUrl: { type: 'string' },
+    targets: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+    appUrl: { type: 'string' },
   }
 };
 

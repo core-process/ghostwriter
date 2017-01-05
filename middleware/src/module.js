@@ -6,15 +6,15 @@ import { validate } from 'jsonschema';
 import CONFIG_SCHEMA from 'ghostwriter-common/build/config-schema.js';
 
 export default function(config) {
-  // strip token, urlTest and serviceUrl from configuration
+  // strip token, urlTest and gwUrl from configuration
   let
     token = config.token,
     urlTest = config.urlTest,
-    serviceUrl = config.serviceUrl;
-  config = _.omit(config, 'token', 'urlTest', 'serviceUrl');
-  // verify serviceUrl
-  if(typeof serviceUrl != 'string') {
-    throw new Error('serviceUrl is invalid');
+    gwUrl = config.gwUrl;
+  config = _.omit(config, 'token', 'urlTest', 'gwUrl');
+  // verify gwUrl
+  if(typeof gwUrl != 'string') {
+    throw new Error('gwUrl is invalid');
   }
   // convert urlTest to function
   if(typeof urlTest === 'function') {
@@ -56,13 +56,13 @@ export default function(config) {
   }
   // retrievePage function
   let configApplied = false;
-  async function retrievePage(url) {
+  async function retrievePage(url, target) {
     // apply config if not done already
     if(!configApplied) {
       await request({
         simple: true,
         method: 'POST',
-        uri: serviceUrl + '/configure?' + querystring.stringify({ token }),
+        uri: gwUrl + '/configure?' + querystring.stringify({ token }),
         body: config,
         json: true,
       });
@@ -72,9 +72,10 @@ export default function(config) {
     return JSON.parse(await request({
       simple: true,
       method: 'GET',
-      uri: serviceUrl + '/retrieve-page?' + querystring.stringify({
+      uri: gwUrl + '/retrieve-page?' + querystring.stringify({
         token,
-        pageUrl: url
+        pageUrl: url,
+        target
       }),
     }));
   }
@@ -99,8 +100,21 @@ export default function(config) {
       next(); // bail out of we are in the sandbox
       return;
     }
+    // detect target
+    let target = 'standard';
+    if(userAgent.indexOf('facebookexternalhit') !== -1 || userAgent.indexOf('Facebot') !== -1) {
+      target = 'facebook';
+    }
+    else
+    if(userAgent.indexOf('Twitterbot') !== -1) {
+      target = 'twitter';
+    }
+    else
+    if(userAgent.indexOf('Pinterest') !== -1) {
+      target = 'pinterest';
+    }
     // lets do our magic
-    retrievePage(request.url)
+    retrievePage(request.url, target)
       .then((page) => {
         response.set('Content-Type', 'text/html; charset=utf-8');
         response

@@ -1,17 +1,6 @@
 import request from 'request-promise';
 import * as xml2js from 'xml2js';
-import URI from 'urijs';
-
-function readjustUrl(url, baseUrl) {
-  baseUrl = URI(baseUrl);
-  return URI(url)
-    .protocol(baseUrl.protocol())
-    .username(baseUrl.username())
-    .password(baseUrl.password())
-    .hostname(baseUrl.hostname())
-    .port(baseUrl.port())
-    .toString();
-}
+import adjustUrlBase from './adjust-url-base.js';
 
 export default class SitemapCrawler {
 
@@ -28,6 +17,7 @@ export default class SitemapCrawler {
     const configs = await this._config.retrieveAll();
     for(let config of configs) {
       for(let sitemapUrl of config.sitemaps) {
+        sitemapUrl = adjustUrlBase(sitemapUrl, config.appUrl);
         try {
           await this.crawlSitemap(config, sitemapUrl);
         }
@@ -80,9 +70,9 @@ export default class SitemapCrawler {
     ) {
       for(let entry of sitemap['sitemapindex']['sitemap']) {
         if(entry['loc'] instanceof Array) {
-          const subSitemapUrl = readjustUrl(
+          const subSitemapUrl = adjustUrlBase(
             entry['loc'].join(''),
-            config.baseUrl
+            config.appUrl
           );
           try {
             await this.crawlSitemap(
@@ -105,24 +95,23 @@ export default class SitemapCrawler {
     ) {
       for(let entry of sitemap['urlset']['url']) {
         if(entry['loc'] instanceof Array) {
-          const pageUrl =
-            '/' +
-            URI(readjustUrl(entry['loc'].join(''), config.baseUrl))
-              .relativeTo(config.baseUrl)
-              .toString();
-          try {
-            console.log('*** ghostwriter.sitemapCrawler:', 'caching page', pageUrl);
-            await this._cache.retrievePage(
-              config,
-              pageUrl,
-              false
-            );
-          }
-          catch(error) {
-            console.log(
-              'could not crawl page', pageUrl,
-              ' - error:', error.message || 'unknown error'
-            );
+          const pageUrl = adjustUrlBase(entry['loc'].join(''), config.appUrl);
+          for(let target of config.targets) {
+            try {
+              console.log('*** ghostwriter.sitemapCrawler:', 'caching page', pageUrl, target);
+              await this._cache.retrievePage(
+                config,
+                pageUrl,
+                target,
+                false
+              );
+            }
+            catch(error) {
+              console.log(
+                'could not crawl page', pageUrl, target,
+                ' - error:', error.message || 'unknown error'
+              );
+            }
           }
         }
       }

@@ -64,14 +64,19 @@ function uriOrigin(uri) {
 
 function serializeAttribute (node) {
   var name = node.name, value = node.value;
-  if(name == 'data-ghostwriter-style') {
+  // do not serialize ghostwriter instructions
+  if(name.indexOf('data-ghostwriter-') === 0) {
     return '';
   }
   if(name == 'style') {
-    const gwStyle = node.ownerElement.getAttribute('data-ghostwriter-style');
-    if(gwStyle) {
-      value += ' ' + gwStyle;
+    // attach styles not supported by phantomjs
+    if(node.ownerElement && node.ownerElement.hasAttribute('data-ghostwriter-style')) {
+      const gwStyle = node.ownerElement.getAttribute('data-ghostwriter-style').trim();
+      if(gwStyle) {
+        value += ' ' + gwStyle;
+      }
     }
+    // remove base url from css urls to avoid invalid local urls
     var base = uriOrigin(node.ownerDocument.documentURI);
     value = value.replace(
       new RegExp('url\\('+xregexp.escape(base)+'(.*?)\\)', 'g'),
@@ -94,6 +99,14 @@ function serializeElement (node) {
   var c, i, l;
   var name = node.nodeName.toLowerCase();
   var v = voidElements[name] && node.childNodes.length == 0;
+
+  // strip all javascript script tags if not marked to keep
+  if(  name == 'script'
+   &&  node.getAttribute('type') == 'text/javascript'
+   && !node.hasAttribute('data-ghostwriter-keep')
+  ) {
+    return '';
+  }
 
   // opening tag
   var r = '<' + name;

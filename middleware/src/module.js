@@ -118,7 +118,7 @@ export default function(config) {
       .then((page) => {
         response.set('Content-Type', 'text/html; charset=utf-8');
         response
-          .status(200)
+          .status(page.status)
           .send(page.content);
       })
       .catch((error) => {

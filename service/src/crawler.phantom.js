@@ -42,7 +42,7 @@ async function crawler(url, target, contentPath, viewportWidth, viewportHeight, 
   // wait for complete state
   console.log('waiting for completion...');
   const firstCheck = Date.now();
-  const source = await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve, reject) => {
     function checkReadyState() {
       setTimeout(function () {
         const source = page.evaluateJavaScript(`function () {
@@ -50,8 +50,13 @@ async function crawler(url, target, contentPath, viewportWidth, viewportHeight, 
             ? window.___ghostwriterSource
             : '';
         }`);
-        if(source.length > 0) {
-          resolve(source);
+        const code = page.evaluateJavaScript(`function () {
+          return typeof window.___ghostwriterCode != 'undefined'
+            ? ''+window.___ghostwriterCode
+            : '';
+        }`);
+        if(source.length > 0 && code.length > 0) {
+          resolve({ source, status: parseInt(code) });
         } else {
           if((Date.now() - firstCheck) > completionTimeout) {
             reject(new Error('timeout while waiting for completion'));
@@ -66,7 +71,7 @@ async function crawler(url, target, contentPath, viewportWidth, viewportHeight, 
   });
   // write data to target paths
   console.log('writing result to file...');
-  fs.write(contentPath, source, { charset: 'utf8' });
+  fs.write(contentPath, JSON.stringify(result), { charset: 'utf8' });
 };
 
 if(system.args.length != 7) {

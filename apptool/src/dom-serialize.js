@@ -108,6 +108,21 @@ function serializeElement (node) {
     return '';
   }
 
+  // strip all stylesheet tags if not marked to keep
+  if(  name == 'link'
+   &&  node.getAttribute('rel') == 'stylesheet'
+   && !node.hasAttribute('data-ghostwriter-keep')
+  ) {
+    return '';
+  }
+
+  if(  name == 'style'
+   &&  node.getAttribute('type') == 'text/css'
+   && !node.hasAttribute('data-ghostwriter-keep')
+  ) {
+    return '';
+  }
+
   // opening tag
   var r = '<' + name;
 

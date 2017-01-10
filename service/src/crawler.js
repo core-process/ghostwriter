@@ -38,12 +38,12 @@ export async function crawl(config, url, target) {
     config.sandbox.completionTimeout
   );
   // wait for completion
-  let content = await new Promise((resolve, reject) => {
+  let result = await new Promise((resolve, reject) => {
     script.on('exit', code => {
       if(code == 0) {
-        const content = fs.readFileSync(tmpContent.name, { encoding: 'utf8' });
+        const result = JSON.parse(fs.readFileSync(tmpContent.name, { encoding: 'utf8' }));
         tmpContent.removeCallback();
-        resolve(content);
+        resolve(result);
       }
       else {
         reject(new Error('phantomjs failed; exit code = ' + code));
@@ -52,5 +52,5 @@ export async function crawl(config, url, target) {
   });
   // done
   console.log('*** ghostwriter:', 'crawling completed successfully');
-  return content;
+  return result;
 }

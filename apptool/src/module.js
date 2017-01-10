@@ -36,7 +36,9 @@ export function setup(...tokens) {
 }
 
 // done function
-export function done(token) {
+let _code = 200;
+
+export function done(token, code = 200) {
   if(!_status) {
     throw new Error('cannot call done before setup!');
   }
@@ -44,6 +46,9 @@ export function done(token) {
     throw new Error('token does not exist!');
   }
   _status[token] = true;
+  if(code > _code) {
+    _code = code;
+  }
 }
 
 // completed function
@@ -76,6 +81,11 @@ export function completed() {
   return (_completed = true);
 }
 
+// code function
+export function code() {
+  return _code;
+}
+
 // update global completion state if we are in a sandbox
 if(sandbox()) {
   (function check() {
@@ -85,6 +95,7 @@ if(sandbox()) {
       }
       else {
         setTimeout(() => {
+          window.___ghostwriterCode = code();
           window.___ghostwriterSource = serialize(document);
         }, 1000);
       }

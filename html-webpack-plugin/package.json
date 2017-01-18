@@ -1,0 +1,22 @@
+{
+  "name": "ghostwriter-html-webpack-plugin",
+  "version": "1.0.29",
+  "description": "",
+  "main": "module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-process/ghostwriter.git"
+  },
+  "author": "Niklas Salmoukas <niklas@salmoukas.com>",
+  "license": "SEE LICENSE IN license.md",
+  "bugs": {
+    "url": "https://github.com/core-process/ghostwriter/issues"
+  },
+  "homepage": "https://github.com/core-process/ghostwriter#readme",
+  "dependencies": {
+    "html-webpack-plugin": "^2.26.0"
+  }
+}

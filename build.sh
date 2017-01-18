@@ -41,6 +41,9 @@ if [ "$ENABLE_PUBLISH" = true ]; then
   cd "$ROOT_DIR/apptool"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cp ../readme.md readme.md
+  cd "$ROOT_DIR/html-webpack-plugin"
+  npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
+  cp ../readme.md readme.md
   cd "$ROOT_DIR/middleware"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cp ../readme.md readme.md
@@ -67,6 +70,15 @@ if [ "$ENABLE_REBUILD" = true ]; then
   npm install
 fi
 npm run build
+if [ "$ENABLE_PUBLISH" = true ]; then
+  npm publish
+fi
+
+cd "$ROOT_DIR/html-webpack-plugin"
+if [ "$ENABLE_REBUILD" = true ]; then
+  rm -r -f node_modules
+  npm install
+fi
 if [ "$ENABLE_PUBLISH" = true ]; then
   npm publish
 fi

@@ -1,6 +1,6 @@
 {
   "name": "ghostwriter-service",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "",
   "bin": {
     "ghostwriter-service": "build/main.js"

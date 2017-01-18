@@ -1,4 +1,5 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var clone = require('clone');
 
 const createHtmlTag = HtmlWebpackPlugin.prototype.createHtmlTag;
 

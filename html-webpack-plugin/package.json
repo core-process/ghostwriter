@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/core-process/ghostwriter#readme",
   "dependencies": {
+    "clone": "^2.1.0",
     "html-webpack-plugin": "^2.26.0"
   }
 }

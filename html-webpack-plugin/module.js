@@ -27,4 +27,4 @@ HtmlWebpackPlugin.prototype.createHtmlTag = function(definition) {
   return createHtmlTag(definition);
 };
 
-exports = HtmlWebpackPlugin;
+module.exports = HtmlWebpackPlugin;

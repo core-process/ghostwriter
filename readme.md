@@ -1,6 +1,6 @@
 # Ghostwriter
 
-Prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.
+Ghostwriter prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.
 
 | Module | Downloads | Version | License |
 | :--- | :--- | :--- | :--- |
@@ -10,11 +10,11 @@ Prerenders your JavaScript website for search engines, SEO tools, social media c
 | `ghostwriter-service` | ![npm downloads total](https://img.shields.io/npm/dt/ghostwriter-service.svg) | ![npm version](https://img.shields.io/npm/v/ghostwriter-service.svg) | ![npm license](https://img.shields.io/npm/l/ghostwriter-service.svg) |
 | `ghostwriter-common` | ![npm downloads total](https://img.shields.io/npm/dt/ghostwriter-common.svg) | ![npm version](https://img.shields.io/npm/v/ghostwriter-common.svg) | ![npm license](https://img.shields.io/npm/l/ghostwriter-common.svg) |
 
-Ghostwriter is a replacement for the prerender.io service. In contrast to prerender.io it does not limit serving of prerendered pages to a specific set of spiders. Quite the contrary, it serves prerendered pages to all clients and browsers. Therefore Ghostwriter should NOT be vulnerable to accidental cloaking.
+Ghostwriter is a replacement for the prerender.io service. In contrast to prerender.io, it does not limit serving of prerendered pages to a particular set of spiders. Quite the contrary, it serves prerendered pages to all clients and browsers. Therefore Ghostwriter should NOT be vulnerable to accidental cloaking.
 
-This approach results in one simple requirement for your web application: it should not be scared about prerendered content in the DOM, e.g. it should be able to discard an re-render or it should be able to reconcile the content. Usually this is not an issue if your web application is structured properly.
+This approach results in one simple requirement for your web application: it should not be scared about prerendered content in the DOM, e.g. it should be able to discard and re-render, or it should be able to reconcile the content. Usually, this is not an issue if your web application is structured correctly.
 
-A complete example web application based on React is provided here: https://github.com/core-process/ghostwriter-example
+Here you will find a complete example web application based on React: https://github.com/core-process/ghostwriter-example
 
 ## Install
 

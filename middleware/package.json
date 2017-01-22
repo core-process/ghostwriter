@@ -1,7 +1,7 @@
 {
   "name": "ghostwriter-middleware",
   "version": "1.0.31",
-  "description": "Prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
+  "description": "Ghostwriter prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
   "main": "build/module.js",
   "scripts": {
     "build": "babel src --out-dir build --source-maps --copy-files",

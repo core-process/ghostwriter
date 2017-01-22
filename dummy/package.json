@@ -1,0 +1,15 @@
+{
+  "name": "ghostwriter",
+  "version": "1.0.31",
+  "description": "Ghostwriter prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-process/ghostwriter.git"
+  },
+  "author": "Niklas Salmoukas <niklas@salmoukas.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/core-process/ghostwriter/issues"
+  },
+  "homepage": "https://github.com/core-process/ghostwriter#readme"
+}

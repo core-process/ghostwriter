@@ -35,6 +35,9 @@ do
 done
 
 if [ "$ENABLE_PUBLISH" = true ]; then
+  cd "$ROOT_DIR/dummy"
+  npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
+  cp ../readme.md readme.md
   cd "$ROOT_DIR/common"
   npm version "$ENABLE_PUBLISH_BUMP" > /dev/null
   cp ../readme.md readme.md
@@ -52,6 +55,11 @@ if [ "$ENABLE_PUBLISH" = true ]; then
   cp ../readme.md readme.md
   cd "$ROOT_DIR"
   git commit -a -m "Bump to version $ENABLE_PUBLISH_VERSION"
+fi
+
+cd "$ROOT_DIR/dummy"
+if [ "$ENABLE_PUBLISH" = true ]; then
+  npm publish
 fi
 
 cd "$ROOT_DIR/common"

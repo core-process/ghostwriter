@@ -1,7 +1,7 @@
 {
   "name": "ghostwriter-common",
   "version": "1.0.31",
-  "description": "",
+  "description": "Prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
   "scripts": {
     "build": "babel src --out-dir build --source-maps --copy-files",
     "build-watch": "babel src --out-dir build --source-maps --copy-files --watch",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/core-process/ghostwriter.git"
   },
   "author": "Niklas Salmoukas <niklas@salmoukas.com>",
-  "license": "SEE LICENSE IN license.md",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/core-process/ghostwriter/issues"
   },

@@ -1,7 +1,7 @@
 {
   "name": "ghostwriter-html-webpack-plugin",
   "version": "1.0.31",
-  "description": "",
+  "description": "Prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
   "main": "module.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/core-process/ghostwriter.git"
   },
   "author": "Niklas Salmoukas <niklas@salmoukas.com>",
-  "license": "SEE LICENSE IN license.md",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/core-process/ghostwriter/issues"
   },

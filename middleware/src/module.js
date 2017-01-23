@@ -10,8 +10,9 @@ export default function(config) {
   let
     token = config.token,
     urlTest = config.urlTest,
-    gwUrl = config.gwUrl;
-  config = _.omit(config, 'token', 'urlTest', 'gwUrl');
+    gwUrl = config.gwUrl,
+    fallbackOnError = !!config.fallbackOnError;
+  config = _.omit(config, 'token', 'urlTest', 'gwUrl', 'fallbackOnError');
   // verify gwUrl
   if(typeof gwUrl != 'string') {
     throw new Error('gwUrl is invalid');
@@ -123,7 +124,17 @@ export default function(config) {
       })
       .catch((error) => {
         console.error('ghostwriter:', 'load failed!', error.message || 'unknown error');
-        next(); // fallback to default
+        // fallback to default
+        if(fallbackOnError) {
+          next();
+        }
+        // report
+        else {
+          response.set('Content-Type', 'text/html; charset=utf-8');
+          response
+            .status(500)
+            .send('Ghostwriter service failed!');
+        }
       });
   }
 }

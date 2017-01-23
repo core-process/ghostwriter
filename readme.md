@@ -226,3 +226,15 @@ This will generate a file `dist/index.html` containing the following:
 ```
 
 For further information, please see the [documentation of the html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).
+
+### Advanced: add style hints
+
+Ghostwriter uses [PhantomJS](http://phantomjs.org/) internally to perform the pre-rendering of the pages. There are some edge cases which are not perfectly supported by PhantomJS. Most of these issues are ironed-out by Ghostwriter internally. Still there is one issue left which might need your intervention.
+
+In case you care about perfect pre-rendered pages and you use modern `style` attributes in the DOM, which are not supported by PhantomJS, you need to add these styles to the `data-ghostwriter-style` attribute. Setting this attribute will ensure, the unsupported styles are still included in the pre-rendered page properly.
+
+Example:
+
+The `object-fit` style is not supported by PhantomJS, therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
+
+In case you do not use these modern styles in the DOM or in case you do not care if the pre-rendered matches your dynamic application to the point, just leave it out.

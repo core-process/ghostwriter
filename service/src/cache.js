@@ -45,7 +45,7 @@ export default class Cache {
     }
     // update page in background if required
     else
-    if(  (page.timestamp + config.refreshCycle) < Date.now()
+    if(  (page.timestamp + (config.refreshCycle * 60 * 60 * 1000)) < Date.now()
       || page.version != config.version
     ) {
       if(backgroundRefresh && page.version == config.version) {

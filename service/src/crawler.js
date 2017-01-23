@@ -35,7 +35,7 @@ export async function crawl(config, url, target) {
     url, target, tmpContent.name,
     config.sandbox.viewportWidth,
     config.sandbox.viewportHeight,
-    config.sandbox.completionTimeout
+    config.sandbox.completionTimeout * 1000
   );
   // wait for completion
   let result = await new Promise((resolve, reject) => {

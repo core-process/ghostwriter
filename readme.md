@@ -227,6 +227,44 @@ This will generate a file `dist/index.html` containing the following:
 
 For further information, please see the [documentation of the html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).
 
+### Advanced: rendering targets
+
+Ghostwriter identifies a limited set of rendering targets to support fine-tuning of the pre-rendered result. This might be useful e.g. to iron-out specific incompatibilities between social networks and their required meta data. Please use this feature with care and do not use it for cloaking purposes.
+
+Currently the following rendering targets are identified:
+
+| Identifier | Target |
+| :-- | :-- |
+| `facebook` | Facebook crawler |
+| `twitter` | Twitter crawler |
+| `pinterest` | Pinterest crawler |
+| `standard` | All other, e.g. regular browser, Google, ... |
+
+The current rendering target can be retrieved via the `target` function of the `ghostwriter-apptool` module. Example:
+
+```js
+import * as ghostwriter from 'ghostwriter-apptool';
+import React from 'react';
+import DocumentMeta from 'react-document-meta';
+...
+return (
+  <div lang={language} className="charts">
+    <DocumentMeta
+      auto={{ ograph: true }}
+      meta={{ property:
+        'article:author':
+          ghostwriter.target() != 'pinterest'
+            ? 'https://www.facebook.com/niklas.salmoukas'
+            : 'Niklas Salmoukas'
+      }}
+      ...
+    />
+    ...
+  </div>
+);
+...
+```
+
 ### Advanced: add style hints
 
 Ghostwriter uses [PhantomJS](http://phantomjs.org/) internally to perform the pre-rendering of the pages. There are some edge cases which are not perfectly supported by PhantomJS. Most of these issues are ironed-out by Ghostwriter internally. Still, there is one issue left which might need your intervention.

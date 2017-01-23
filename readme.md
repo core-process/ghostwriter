@@ -138,6 +138,7 @@ The middleware accepts the following parameters:
 | `sitemaps` | An array of sitemap paths used to actively crawl the application | `[ '/sitemap.xml' ]` |
 | `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none (required) |
 | `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
+| `retriesOnError` | Number of retries if Ghostwriter fails | `3` |
 | `fallbackOnError` | Fallback to default behavior in case Ghostwriter fails | `false` |
 
 ## Application Frontend

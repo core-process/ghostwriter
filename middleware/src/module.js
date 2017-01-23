@@ -11,7 +11,11 @@ export default function(config) {
     token = config.token,
     urlTest = config.urlTest,
     gwUrl = config.gwUrl,
-    retriesOnError = config.retriesOnError || 0,
+    retriesOnError =
+      (typeof config.retriesOnError !== 'undefined'
+        ? config.retriesOnError
+        : 3
+      ),
     fallbackOnError = !!config.fallbackOnError;
   config = _.omit(
     config,

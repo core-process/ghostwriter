@@ -80,7 +80,7 @@ $ docker run \
 
 See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
 
-## Application Backend (Ghostwriter Middleware)
+## Application Backend
 
 Ghostwriter hooks into your `express` application with the help of a middleware. Install the `ghostwriter-middleware` module via:
 
@@ -133,30 +133,54 @@ The middleware accepts the following parameters:
 | `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none |
 | `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
 
-## Application Frontend (Ghostwriter App-Tools)
+## Application Frontend
+
+Your frontend application is required to confirm the successful completion of the rendering process. This is done by defining and confirming so-called 'sections' with the help of the `ghostwriter-apptools` module. Install the `ghostwriter-apptools` module via:
 
 ```
-$ npm install --save ghostwriter-apptools
+$ npm install ghostwriter-apptools --save
+# ... or ...
+$ yarn add ghostwriter-apptools
 ```
+
+Define the 'sections' as soon as possible in your entry point. The sections need to be defined via the `setup` function before they can be confirmed and there has to be only one call to the `setup` function. The `setup` function accepts an arbitrary number of 'section' names, e.g.:
 
 ```js
 ...
-// define sections which require render confirmation
+// define sections which require render confirmation at the very first
 import * as ghostwriter from 'ghostwriter-apptool';
 ghostwriter.setup('newsticker', 'page');
 ...
 ```
 
+Confirm the rendering of the 'sections' in your components with the `done` function as soon as the expected rendering result is represented by the DOM. Think about it twice and read the documentation of your rendering library carefully. The `done` function expects a valid 'section' name as single parameter.
+
+Below you will find two React-based examples.
+
 ```js
 ...
-// confirm rendering of a section
 import * as ghostwriter from 'ghostwriter-apptool';
+// a 'page' which does not load additional data
 export default class SomePage extends React.Component {
   componentDidMount() {
     ghostwriter.done('page');
   }
   render() {
-    return (<div>...</div>);
+    return (<div className="some-page">...</div>);
+  }
+};
+...
+// a 'page' which does load additional data (confirm after rendering of data)
+export default class AnotherPage extends React.Component {
+  componentDidMount() {
+    loadPageData((data) => {
+      this.setState({ data }, () => {
+        ghostwriter.done('page');
+      });
+    });
+  }
+  render() {
+    return (<div className="another-page">...</div>);
   }
 };
 ...

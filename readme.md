@@ -160,6 +160,7 @@ Below you will find two React-based examples.
 ```js
 ...
 import * as ghostwriter from 'ghostwriter-apptool';
+
 // a 'page' which does not load additional data
 export default class SomePage extends React.Component {
   componentDidMount() {
@@ -170,6 +171,7 @@ export default class SomePage extends React.Component {
   }
 };
 ...
+
 // a 'page' which does load additional data (confirm after rendering of data)
 export default class AnotherPage extends React.Component {
   componentDidMount() {

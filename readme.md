@@ -247,21 +247,18 @@ import * as ghostwriter from 'ghostwriter-apptool';
 import React from 'react';
 import DocumentMeta from 'react-document-meta';
 ...
-return (
-  <div lang={language} className="charts">
-    <DocumentMeta
-      auto={{ ograph: true }}
-      meta={{ property:
-        'article:author':
-          ghostwriter.target() != 'pinterest'
-            ? 'https://www.facebook.com/niklas.salmoukas'
-            : 'Niklas Salmoukas'
-      }}
-      ...
-    />
+<div className="some-page">
+  <DocumentMeta
+    meta={{ property:
+      'article:author':
+        ghostwriter.target() != 'pinterest'
+          ? 'https://www.facebook.com/niklas.salmoukas'
+          : 'Niklas Salmoukas'
+    }}
     ...
-  </div>
-);
+  />
+  ...
+</div>
 ...
 ```
 

@@ -88,13 +88,22 @@ export default function(config) {
       }
       // apply config if not done already
       if(response.statusCode == 401) {
-        await request({
-          simple: true,
-          method: 'POST',
-          uri: gwUrl + '/configure?' + querystring.stringify({ token }),
-          body: config,
-          json: true,
-        });
+        try {
+          await request({
+            simple: true,
+            method: 'POST',
+            uri: gwUrl + '/configure?' + querystring.stringify({ token }),
+            body: config,
+            json: true,
+          });
+          --i;
+          continue; // try again
+        }
+        catch(error) {
+          console.log('ghostwriter: could not configure - ', url, target, error.message || 'unknown error');
+          lastError = error;
+          continue; // try again
+        }
       }
       // handle non 200 codes
       if(response.statusCode != 200) {

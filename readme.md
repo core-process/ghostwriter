@@ -16,13 +16,11 @@ This approach results in one simple requirement for your web application: it sho
 
 Here you will find a complete example web application based on React: https://github.com/core-process/ghostwriter-example
 
-## Install
-
-### Ghostwriter Service
+## Ghostwriter Service
 
 The Ghostwriter service is provided as [Docker image](https://quay.io/repository/process_team/ghostwriter-service) and as [NPM package](https://www.npmjs.com/package/ghostwriter-service). Just pick whatever flavor you like best.
 
-#### NPM package
+### NPM package
 
 Install the `ghostwriter-service` module via:
 
@@ -59,7 +57,7 @@ This enables you to run the service via `npm`:
 $ npm run ghostwriter-service
 ```
 
-#### Docker image
+### Docker image
 
 Pull the latest `ghostwriter-service` image via:
 
@@ -82,21 +80,11 @@ $ docker run \
 
 See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
 
-### Backend
+## Backend
 
 ```
 $ npm install --save ghostwriter-middleware
 ```
-
-### Frontend
-
-```
-$ npm install --save ghostwriter-apptools
-```
-
-## Usage
-
-### Backend
 
 ```js
 ...
@@ -125,7 +113,11 @@ app.use(ghostwriter({
 ...
 ```
 
-### Frontend
+## Frontend
+
+```
+$ npm install --save ghostwriter-apptools
+```
 
 ```js
 ...

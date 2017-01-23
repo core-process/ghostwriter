@@ -225,4 +225,4 @@ This will generate a file `dist/index.html` containing the following:
 </html>
 ```
 
-For further information, please see [documentation of html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).
+For further information, please see the [documentation of the html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).

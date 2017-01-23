@@ -123,14 +123,14 @@ The middleware accepts the following parameters:
 
 | Parameter | Description | Default Value |
 | :--- | :--- | :--- |
-| `token` | Unique name of your application instance, e.g. the name from your `package.json` | none |
-| `version` | A version string to identify the current version of your application, e.g. the git commit id | none |
+| `token` | Unique name of your application instance, e.g. the name from your `package.json` | none (required) |
+| `version` | A version string to identify the current version of your application, e.g. the git commit id | none (required) |
 | `refreshCycle` | The number of hours before a rendered page needs to be refreshed | `1.0` |
 | `sandbox.viewportWidth` | The width of the rendering viewport in pixels | `1280` |
 | `sandbox.viewportHeight` | The height of the rendering viewport in pixels | `800` |
 | `sandbox.completionTimeout` | The number of seconds to wait before rendering fails | `30.0` |
 | `sitemaps` | An array of sitemap paths used to actively crawl the application | `[ '/sitemap.xml' ]` |
-| `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none |
+| `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none (required) |
 | `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
 
 ## Application Frontend

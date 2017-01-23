@@ -187,3 +187,11 @@ export default class AnotherPage extends React.Component {
 };
 ...
 ```
+
+### Handling of 'script', 'link' and 'style'
+
+All instances of the tags `<script type="text/javascript">`, `<link rel="stylesheet">` and `<style type="text/css">` will be filtered by Ghostwriter if not marked with the attribute `data-ghostwriter-keep`. This behavior might be surprising on the first sight, but is well-thought. A lot of external libraries clutter the DOM with these tags without proper checks for duplicates. Therefore if not controlled, libraries start to add these tags twice and might trigger undefined behavior. Simply add `data-ghostwriter-keep` to your own tags you want to be part of the pre-rendered result and you are good to go.
+
+To make things easier, we created the module [ghostwriter-html-webpack-plugin](https://www.npmjs.com/package/ghostwriter-html-webpack-plugin) as drop-in replacement for the [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin). The `ghostwriter-html-webpack-plugin` imports and extends the `html-webpack-plugin` internally. You can use `ghostwriter-html-webpack-plugin` exactly like you would use `html-webpack-plugin`. The only difference in behavior is that `ghostwriter-html-webpack-plugin` adds the attribute `data-ghostwriter-keep` to the previously mentioned tags.
+
+Therefore, for further information, please see [documentation of html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).

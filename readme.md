@@ -229,9 +229,9 @@ For further information, please see the [documentation of the html-webpack-plugi
 
 ### Advanced: rendering targets
 
-Ghostwriter identifies a limited set of rendering targets to support fine-tuning of the pre-rendered result. This might be useful e.g. to iron-out specific incompatibilities between social networks and their required meta data. Please use this feature with care and do not use it for cloaking purposes.
+Ghostwriter identifies a limited set of rendering targets to support fine-tuning of the pre-rendered result. This capability might be useful e.g. to iron-out specific incompatibilities between social networks and their required metadata. Please use this feature with care and do not use it for cloaking purposes.
 
-Currently the following rendering targets are identified:
+Currently, Ghostwriter identifies the following rendering targets:
 
 | Identifier | Target |
 | :-- | :-- |
@@ -240,7 +240,7 @@ Currently the following rendering targets are identified:
 | `pinterest` | Pinterest crawler |
 | `standard` | All other, e.g. regular browser, Google, ... |
 
-The current rendering target can be retrieved via the `target` function of the `ghostwriter-apptool` module. Example:
+You can retrieve the current rendering target via the `target` function of the `ghostwriter-apptool` module. Example:
 
 ```js
 import * as ghostwriter from 'ghostwriter-apptool';

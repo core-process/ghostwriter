@@ -80,7 +80,7 @@ $ docker run \
 
 See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
 
-## Application Backend
+## Application Backend (Ghostwriter Middleware)
 
 Ghostwriter hooks into your `express` application with the help of a middleware. Install the `ghostwriter-middleware` module via:
 
@@ -133,7 +133,7 @@ The middleware accepts the following parameters:
 | `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none |
 | `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
 
-## Application Frontend
+## Application Frontend (Ghostwriter App-Tools)
 
 ```
 $ npm install --save ghostwriter-apptools

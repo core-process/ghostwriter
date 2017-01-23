@@ -188,7 +188,7 @@ export default class AnotherPage extends React.Component {
 ...
 ```
 
-### Handling of 'script', 'link' and 'style'
+### Handling of script, link and style tags
 
 All instances of the tags `<script type="text/javascript">`, `<link rel="stylesheet">` and `<style type="text/css">` will be filtered by Ghostwriter if not marked with the attribute `data-ghostwriter-keep`. This behavior might be surprising on the first sight, but is well-thought. A lot of external libraries clutter the DOM with these tags without proper checks for duplicates. Therefore if not controlled, libraries start to add these tags twice and might trigger undefined behavior. Simply add `data-ghostwriter-keep` to your own tags you want to be part of the pre-rendered result and you are good to go.
 

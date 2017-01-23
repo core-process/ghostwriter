@@ -51,7 +51,7 @@ We recommend to add the service to your `package.json`:
 }
 ```
 
-This enables you to run the service via `npm`:
+The previous entry enables you to run the service via `npm`:
 
 ```
 $ npm run ghostwriter-service
@@ -65,9 +65,9 @@ Pull the latest `ghostwriter-service` image via:
 $ docker pull quay.io/process_team/ghostwriter-service:latest
 ```
 
-The Docker image requires the environment variable `DATABASE_URI` pointing to a valid MongoDB database and creates a service listening on port `8888`.
+The Docker image requires the environment variable `DATABASE_URI` pointing to a MongoDB database and creates a service listening on port `8888`.
 
-Create your Ghostwriter service with the following command:
+Run your Ghostwriter service with the following command:
 
 ```
 $ docker run \
@@ -82,7 +82,7 @@ See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run
 
 ## Application Backend
 
-Ghostwriter hooks into your `express` application with the help of a middleware. Install the `ghostwriter-middleware` module via:
+Ghostwriter hooks into your `express` application with the help of middleware. Install the `ghostwriter-middleware` module via:
 
 ```
 $ npm install ghostwriter-middleware --save
@@ -135,7 +135,7 @@ The middleware accepts the following parameters:
 
 ## Application Frontend
 
-Your frontend application is required to confirm the successful completion of the rendering process. This is done by defining and confirming so-called 'sections' with the help of the `ghostwriter-apptools` module. Install the `ghostwriter-apptools` module via:
+Your frontend application is required to confirm the successful completion of the rendering process. This is accomplished by defining so-called 'sections' with the help of the `ghostwriter-apptools` module. Install the `ghostwriter-apptools` module via:
 
 ```
 $ npm install ghostwriter-apptools --save
@@ -153,7 +153,7 @@ ghostwriter.setup('newsticker', 'page');
 ...
 ```
 
-Confirm the rendering of the 'sections' in your components with the `done` function as soon as the expected rendering result is represented by the DOM. Think about it twice and read the documentation of your rendering library carefully. The `done` function expects a valid 'section' name as single parameter.
+Confirm the rendering of the 'sections' in your components with the `done` function as soon as the DOM represents the expected rendering result. Think about it twice and read the documentation of your rendering library carefully. The `done` function expects a valid 'section' name as a single parameter.
 
 Below you will find two React-based examples.
 
@@ -190,9 +190,9 @@ export default class AnotherPage extends React.Component {
 
 ### Handling of script, link and style tags
 
-All instances of the tags `<script type="text/javascript">`, `<link rel="stylesheet">` and `<style type="text/css">` will be filtered by Ghostwriter if not marked with the attribute `data-ghostwriter-keep`. This behavior might be surprising on the first sight, but is well-thought. A lot of external libraries clutter the DOM with these tags without proper checks for duplicates. Therefore if not controlled, libraries start to add these tags twice and might trigger undefined behavior. Simply add `data-ghostwriter-keep` to your own tags you want to be part of the pre-rendered result and you are good to go.
+All instances of the tags `<script type="text/javascript">`, `<link rel="stylesheet">` and `<style type="text/css">` will be filtered by Ghostwriter if not marked with the attribute `data-ghostwriter-keep`. This behavior might be surprising on the first sight but is well-thought. A lot of external libraries clutter the DOM with these tags without proper checks for duplicates. Therefore if not controlled, libraries start to add these tags twice and might trigger undefined behavior. Just add `data-ghostwriter-keep` to your tags you want to be part of the pre-rendered result, and you are ready to go.
 
-To make things easier, we created the module [ghostwriter-html-webpack-plugin](https://www.npmjs.com/package/ghostwriter-html-webpack-plugin) as drop-in replacement for the [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin). The `ghostwriter-html-webpack-plugin` imports and extends the `html-webpack-plugin` internally. You can use `ghostwriter-html-webpack-plugin` exactly like you would use `html-webpack-plugin`. The only difference in behavior is that `ghostwriter-html-webpack-plugin` adds the attribute `data-ghostwriter-keep` to the previously mentioned tags.
+To make things easier, we created the module [ghostwriter-html-webpack-plugin](https://www.npmjs.com/package/ghostwriter-html-webpack-plugin) as a drop-in replacement for the [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin). The `ghostwriter-html-webpack-plugin` imports and extends the `html-webpack-plugin` internally. You can use `ghostwriter-html-webpack-plugin` exactly like you would use `html-webpack-plugin`. The only difference in behavior is that `ghostwriter-html-webpack-plugin` adds the attribute `data-ghostwriter-keep` to the previously mentioned tags.
 
 Below you will find a simple example setup:
 
@@ -229,10 +229,10 @@ For further information, please see the [documentation of the html-webpack-plugi
 
 ### Advanced: add style hints
 
-Ghostwriter uses [PhantomJS](http://phantomjs.org/) internally to perform the pre-rendering of the pages. There are some edge cases which are not perfectly supported by PhantomJS. Most of these issues are ironed-out by Ghostwriter internally. Still there is one issue left which might need your intervention.
+Ghostwriter uses [PhantomJS](http://phantomjs.org/) internally to perform the pre-rendering of the pages. There are some edge cases which are not perfectly supported by PhantomJS. Most of these issues are ironed-out by Ghostwriter internally. Still, there is one issue left which might need your intervention.
 
-In case you care about perfect pre-rendered pages and you use modern `style` attributes in the DOM, which are not supported by PhantomJS, you need to add these styles to the `data-ghostwriter-style` attribute. Setting this attribute will ensure, the unsupported styles are still included in the pre-rendered page properly.
+In case you care about perfect pre-rendered pages, and you use modern `style` attributes in the DOM, which are not supported by PhantomJS, you need to add these styles to the `data-ghostwriter-style` attribute. Setting this attribute will ensure, the unsupported styles are still included in the pre-rendered page correctly.
 
-**Example:** The `object-fit` style is not supported by PhantomJS, therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
+**Example:** PhantomJS does not support the style `object-fit`. Therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
 
 *Just to be clear:* In case you do not use these modern styles in the DOM or in case you do not care if the pre-rendered matches your dynamic application to the point, just leave it out.

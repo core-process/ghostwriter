@@ -36,7 +36,9 @@ The module provides the service binary `ghostwriter-service`, which requires the
 | :--- | :--- |  :--- |
 | `--port` | Port to listen on | `8887` |
 | `--database-uri` | URL to a MongoDB database | `mongodb://database:27017/ghostwriter` |
-| `--keep-database` | Keep current database (otherwise Ghostwriter will recreate it) | |
+| `--keep-database` | Keep current database | |
+
+If you do not pass the `--keep-database` parameter to the Ghostwriter service, it will drop and recreate the provided MongoDB database.
 
 We recommend to add the service to your `package.json`:
 

@@ -12,7 +12,7 @@ Ghostwriter prerenders your JavaScript website for search engines, SEO tools, so
 
 Ghostwriter is a replacement for the prerender.io service. In contrast to prerender.io, it does not limit serving of prerendered pages to a particular set of spiders. Quite the contrary, it serves prerendered pages to all crawlers and browsers. Therefore Ghostwriter should NOT be vulnerable to accidental cloaking.
 
-This approach results in one simple requirement for your web application: it should not be scared about prerendered content in the DOM, e.g. it should be able to discard and re-render, or it should be able to reconcile the content. Usually, this is not an issue if your web application is structured correctly.
+This approach results in one simple requirement for your web application: it should not be scared about prerendered content in the DOM, e.g. it should be able to discard and re-render, or it should be able to reconcile the content. Usually, this is not an issue if your web application is structured correctly. Also, we added a safeguard to control `link`, `script` and `style` tags which get added to the DOM by external libraries. You can read about it in the section "Handling of script, link and style tags" below.
 
 Here you will find a complete example web application based on React: https://github.com/core-process/ghostwriter-example
 

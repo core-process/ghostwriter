@@ -20,7 +20,7 @@ Here you will find a complete example web application based on React: https://gi
 
 ### Ghostwriter Service
 
-The Ghostwriter service is provided as Docker image and as NPM package. Just pick what you prefer.
+The Ghostwriter service is provided as [Docker image](https://quay.io/repository/process_team/ghostwriter-service) and as [NPM package](https://www.npmjs.com/package/ghostwriter-service). Just pick whatever flavor you like best.
 
 #### NPM package
 
@@ -32,20 +32,21 @@ $ npm install ghostwriter-service --save
 $ yarn add ghostwriter-service
 ```
 
-The service binary `ghostwriter-service` placed in `node_modules/.bin` requires the following parameters:
+The module provides the service binary `ghostwriter-service`, which requires the following parameters:
 
 | Parameter | Description | Example |
 | :--- | :--- |  :--- |
 | `--port` | Port to listen on | `8887` |
 | `--database-uri` | URL to a MongoDB database | `mongodb://database:27017/ghostwriter` |
 
-Add the service to your `package.json` if you like:
+We recommend to add the service to your `package.json`:
 
-```json
+```js
 {
   ...
   "scripts": {
-    "ghostwriter-service": "ghostwriter-service --port 8887 --database-uri mongodb://database:27017/ghostwriter",
+    "ghostwriter-service":
+      "ghostwriter-service --port 8887 --database-uri mongodb://database:27017/ghostwriter",
     ...
   },
   ...
@@ -60,15 +61,15 @@ $ npm run ghostwriter-service
 
 #### Docker image
 
-Pull the `ghostwriter-service` image via:
+Pull the latest `ghostwriter-service` image via:
 
 ```
 $ docker pull quay.io/process_team/ghostwriter-service:latest
 ```
 
-The Docker image creates a service on port `8888` and requires the environment variable `DATABASE_URI` pointing to a MongoDB database.
+The Docker image requires the environment variable `DATABASE_URI` pointing to a valid MongoDB database and creates a service listening on port `8888`.
 
-Create your Ghostwriter service e.g. with the following command:
+Create your Ghostwriter service with the following command:
 
 ```
 $ docker run \
@@ -79,7 +80,7 @@ $ docker run \
     quay.io/process_team/ghostwriter-service:latest
 ```
 
-See the Docker [manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
+See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
 
 ### Backend
 

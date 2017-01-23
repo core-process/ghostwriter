@@ -18,6 +18,69 @@ Here you will find a complete example web application based on React: https://gi
 
 ## Install
 
+### Ghostwriter Service
+
+The Ghostwriter service is provided as Docker image and as NPM package. Just pick what you prefer.
+
+#### NPM package
+
+Install the `ghostwriter-service` module via:
+
+```
+$ npm install ghostwriter-service --save
+# ... or ...
+$ yarn add ghostwriter-service
+```
+
+The service binary `ghostwriter-service` placed in `node_modules/.bin` requires the following parameters:
+
+| Parameter | Description | Example |
+| :--- | :--- |  :--- |
+| `--port` | Port to listen on | `8887` |
+| `--database-uri` | URL to a MongoDB database | `mongodb://database:27017/ghostwriter` |
+
+Add the service to your `package.json` if you like:
+
+```json
+{
+  ...
+  "scripts": {
+    "ghostwriter-service": "ghostwriter-service --port 8887 --database-uri mongodb://database:27017/ghostwriter",
+    ...
+  },
+  ...
+}
+```
+
+This enables you to run the service via `npm`:
+
+```
+$ npm run ghostwriter-service
+```
+
+#### Docker image
+
+Pull the `ghostwriter-service` image via:
+
+```
+$ docker pull quay.io/process_team/ghostwriter-service:latest
+```
+
+The Docker image creates a service on port `8888` and requires the environment variable `DATABASE_URI` pointing to a MongoDB database.
+
+Create your Ghostwriter service e.g. with the following command:
+
+```
+$ docker run \
+    -d \
+    --name myghostwriter \
+    -p 127.0.0.1:8887:8888 \
+    --env DATABASE_URI=mongodb://database:27017/ghostwriter \
+    quay.io/process_team/ghostwriter-service:latest
+```
+
+See the Docker [manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
+
 ### Backend
 
 ```
@@ -35,33 +98,53 @@ $ npm install --save ghostwriter-apptools
 ### Backend
 
 ```js
-// setup ghostwriter middleware (for express)
+...
+// e.g. use app name as 'token' (see config below)
+const appName = require('./package.json').name;
+
+// e.g. use git commit id as 'version'
+import childProcess from 'child_process';
+const gitCommitId =
+  childProcess.execSync('git rev-parse HEAD').toString().trim();
+
+// e.g. do not pre-render calls to /api*, used as 'urlTest'
+const urlTest =
+  (url) => !url.startsWith('/api');
+
+// setup ghostwriter middleware for express
 import ghostwriter from 'ghostwriter-middleware';
 app.use(ghostwriter({
-  token: 'bd7a1578-865e-463e-9049-fc1fe4319574',  // choose a unique app id
-  version: 'da39a3ee5e6b4b0d3255bfef95601890afd80709', // e.g. git commit id
-  urlTest: (url) => !url.startsWith('/api'),
+  token: appName,
+  version: gitCommitId,
+  sitemaps: [ '/sitemap.xml' ],
+  urlTest: urlTest,
   gwUrl: 'http://localhost:8887',
-  appUrl: 'http://localhost:8888',
-  sitemaps: [ '/sitemap.xml' ]
+  appUrl: 'http://localhost:8888'
 }));
+...
 ```
 
 ### Frontend
 
 ```js
-// setup ghostwriter client-tools
+...
+// define sections which require render confirmation
 import * as ghostwriter from 'ghostwriter-apptool';
-ghostwriter.setup('page');
+ghostwriter.setup('newsticker', 'page');
+...
+```
 
-// confirm rendering of page
+```js
+...
+// confirm rendering of a section
 import * as ghostwriter from 'ghostwriter-apptool';
-export default class Page extends React.Component {
+export default class SomePage extends React.Component {
   componentDidMount() {
     ghostwriter.done('page');
   }
   render() {
-    return (<div/>);
+    return (<div>...</div>);
   }
 };
+...
 ```

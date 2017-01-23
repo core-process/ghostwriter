@@ -5,11 +5,12 @@ import _ from 'underscore';
 import CONFIG_SCHEMA from 'ghostwriter-common/build/config-schema.js';
 
 const CONFIG_DEFAULT = Object.freeze({
-  refreshCycle: 60 * 60 * 1000,
+  version: 'unknown',
+  refreshCycle: 1.0,
   sandbox: Object.freeze({
     viewportWidth: 1280,
     viewportHeight: 800,
-    completionTimeout: 30 * 1000,
+    completionTimeout: 30.0,
   }),
   sitemaps: Object.freeze([
     '/sitemap.xml',
@@ -20,7 +21,7 @@ const CONFIG_DEFAULT = Object.freeze({
     'twitter',
     'pinterest',
   ]),
-  appUrl: 'http://application:8888',
+  appUrl: 'http://localhost',
 });
 
 export default class Config {

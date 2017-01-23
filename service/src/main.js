@@ -22,10 +22,18 @@ async function setup() {
     [ '-db', '--database-uri' ],
     { required: true, help: 'database uri' }
   );
+  parser.addArgument(
+    [ '-keep-db', '--keep-database' ],
+    { required: false, help: 'keep current database (otherwise we will recreate it)', action: 'storeTrue', defaultValue: false }
+  );
   // parse arguments
   const args = parser.parseArgs();
   // connect to database
   const db = await MongoClient.connect(args.database_uri);
+  // drop database
+  if(!args.keep_database) {
+    await db.dropDatabase();
+  }
   // initialize web service and sitemap crawler
   const
     config = new Config(db.collection('config')),

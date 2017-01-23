@@ -80,11 +80,17 @@ $ docker run \
 
 See the [Docker manual](https://docs.docker.com/engine/reference/commandline/run/) for more.
 
-## Backend
+## Application Backend
+
+Ghostwriter hooks into your `express` application with the help of a middleware. Install the `ghostwriter-middleware` module via:
 
 ```
-$ npm install --save ghostwriter-middleware
+$ npm install ghostwriter-middleware --save
+# ... or ...
+$ yarn add ghostwriter-middleware
 ```
+
+The following example shows how to enable the middleware in your application:
 
 ```js
 ...
@@ -113,7 +119,21 @@ app.use(ghostwriter({
 ...
 ```
 
-## Frontend
+The middleware accepts the following parameters:
+
+| Parameter | Description | Default Value |
+| :--- | :--- | :--- |
+| `token` | Unique name of your application instance | none |
+| `version` | A version string to identify the current version of your application | none |
+| `refreshCycle` | The number of hours before a rendered page needs to be refreshed | `1.0` |
+| `sandbox.viewportWidth` | The width of the rendering viewport in pixels | `1280` |
+| `sandbox.viewportHeight` | The height of the rendering viewport in pixels | `800` |
+| `sandbox.completionTimeout` | The number of seconds to wait before rendering fails | `30.0` |
+| `sitemaps` | An array of sitemap paths used to actively crawl the application | `[ '/sitemap.xml' ]` |
+| `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none |
+| `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
+
+## Application Frontend
 
 ```
 $ npm install --save ghostwriter-apptools

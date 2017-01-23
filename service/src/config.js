@@ -38,8 +38,8 @@ export default class Config {
       delete config._id;
       return config;
     }
-    // ... or use default one
-    return deepExtend({ }, CONFIG_DEFAULT, { token });
+    // ... none found
+    return null;
   }
 
   async retrieveAll() {
@@ -56,7 +56,12 @@ export default class Config {
     }
     // retrieve current config
     let config = await this.retrieve(token);
-    delete config.token;
+    if(config) {
+      delete config.token;
+    }
+    else {
+      config = deepExtend({ }, CONFIG_DEFAULT);
+    }
     // update config
     config = deepExtend({ }, config, update);
     // store updated config in database

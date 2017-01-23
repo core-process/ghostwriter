@@ -32,10 +32,18 @@ export default class Service {
       }
       // update configuration
       await this.config.update(request.query.token, request.body);
+      // get config
+      const config = await this.config.retrieve(request.query.token);
+      if(!config) {
+        response
+          .status(401)
+          .json({ });
+        return;
+      }
       // send response
       response
         .status(200)
-        .json({});
+        .json(config);
     }
     catch(error) {
       // send response
@@ -51,10 +59,16 @@ export default class Service {
       if(!request.query.token) {
         throw new Error('token missing');
       }
+      // get config
+      const config = await this.config.retrieve(request.query.token);
+      if(!config) {
+        response
+          .status(401)
+          .json({ });
+        return;
+      }
       // clear cache
-      await this.cache.clear(
-        await this.config.retrieve(request.query.token)
-      );
+      await this.cache.clear(config);
       // send response
       response
         .status(200)
@@ -80,9 +94,17 @@ export default class Service {
       if(!request.query.target) {
         throw new Error('target missing');
       }
+      // get config
+      const config = await this.config.retrieve(request.query.token);
+      if(!config) {
+        response
+          .status(401)
+          .json({ });
+        return;
+      }
       // retrieve page
       const page = await this.cache.retrievePage(
-        await this.config.retrieve(request.query.token),
+        config,
         request.query.pageUrl,
         request.query.target
       );

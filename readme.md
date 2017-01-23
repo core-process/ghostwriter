@@ -194,4 +194,35 @@ All instances of the tags `<script type="text/javascript">`, `<link rel="stylesh
 
 To make things easier, we created the module [ghostwriter-html-webpack-plugin](https://www.npmjs.com/package/ghostwriter-html-webpack-plugin) as drop-in replacement for the [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin). The `ghostwriter-html-webpack-plugin` imports and extends the `html-webpack-plugin` internally. You can use `ghostwriter-html-webpack-plugin` exactly like you would use `html-webpack-plugin`. The only difference in behavior is that `ghostwriter-html-webpack-plugin` adds the attribute `data-ghostwriter-keep` to the previously mentioned tags.
 
-Therefore, for further information, please see [documentation of html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).
+Below you will find a simple example setup:
+
+```js
+// ghostwriter-html-webpack-plugin is a drop-in
+// replacement for html-webpack-plugin
+var HtmlWebpackPlugin = require('ghostwriter-html-webpack-plugin');
+var webpackConfig = {
+  entry: 'index.js',
+  output: {
+    path: 'dist',
+    filename: 'index_bundle.js'
+  },
+  plugins: [new HtmlWebpackPlugin()]
+};
+```
+
+This will generate a file `dist/index.html` containing the following:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+    <script src="index_bundle.js" data-ghostwriter-keep></script>
+  </body>
+</html>
+```
+
+For further information, please see [documentation of html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin/blob/master/README.md).

@@ -123,8 +123,8 @@ The middleware accepts the following parameters:
 
 | Parameter | Description | Default Value |
 | :--- | :--- | :--- |
-| `token` | Unique name of your application instance | none |
-| `version` | A version string to identify the current version of your application | none |
+| `token` | Unique name of your application instance, e.g. the name from your `package.json` | none |
+| `version` | A version string to identify the current version of your application, e.g. the git commit id | none |
 | `refreshCycle` | The number of hours before a rendered page needs to be refreshed | `1.0` |
 | `sandbox.viewportWidth` | The width of the rendering viewport in pixels | `1280` |
 | `sandbox.viewportHeight` | The height of the rendering viewport in pixels | `800` |

@@ -235,4 +235,4 @@ In case you care about perfect pre-rendered pages and you use modern `style` att
 
 **Example:** The `object-fit` style is not supported by PhantomJS, therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
 
-In case you do not use these modern styles in the DOM or in case you do not care if the pre-rendered matches your dynamic application to the point, just leave it out.
+*Just to be clear:* In case you do not use these modern styles in the DOM or in case you do not care if the pre-rendered matches your dynamic application to the point, just leave it out.

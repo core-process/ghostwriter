@@ -56,29 +56,54 @@ export default function(config) {
     throw new Error('invalid configuration');
   }
   // retrievePage function
-  let configApplied = false;
   async function retrievePage(url, target) {
-    // apply config if not done already
-    if(!configApplied) {
-      await request({
-        simple: true,
-        method: 'POST',
-        uri: gwUrl + '/configure?' + querystring.stringify({ token }),
-        body: config,
-        json: true,
-      });
-      configApplied = true;
+    // try loop
+    let lastError = new Error('unknown');
+    for(let i = 0; i < 3; ++i) {
+      // try to retrieve page
+      let response = null;
+      try {
+        response = await request({
+          simple: false,
+          resolveWithFullResponse: true,
+          method: 'GET',
+          uri: gwUrl + '/retrieve-page?' + querystring.stringify({
+            token,
+            pageUrl: url,
+            target
+          }),
+        });
+      }
+      catch(error) {
+        lastError = error;
+        continue; // try again
+      }
+      // apply config if not done already
+      if(response.statusCode == 401) {
+        await request({
+          simple: true,
+          method: 'POST',
+          uri: gwUrl + '/configure?' + querystring.stringify({ token }),
+          body: config,
+          json: true,
+        });
+      }
+      // handle non 200 codes
+      if(response.statusCode != 200) {
+        lastError = new Error('status code != 200');
+        continue; // try again
+      }
+      // parse and return page
+      try {
+        return JSON.parse(response.body);
+      }
+      catch(error) {
+        lastError = error;
+        continue; // try again
+      }
     }
-    // retrieve page
-    return JSON.parse(await request({
-      simple: true,
-      method: 'GET',
-      uri: gwUrl + '/retrieve-page?' + querystring.stringify({
-        token,
-        pageUrl: url,
-        target
-      }),
-    }));
+    // throw last error
+    throw lastError;
   }
   // return configured middleware
   return function(request, response, next) {

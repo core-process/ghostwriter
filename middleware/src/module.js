@@ -11,8 +11,13 @@ export default function(config) {
     token = config.token,
     urlTest = config.urlTest,
     gwUrl = config.gwUrl,
+    retriesOnError = config.retriesOnError || 0,
     fallbackOnError = !!config.fallbackOnError;
-  config = _.omit(config, 'token', 'urlTest', 'gwUrl', 'fallbackOnError');
+  config = _.omit(
+    config,
+    'token', 'urlTest', 'gwUrl',
+    'retriesOnError', 'fallbackOnError'
+  );
   // verify gwUrl
   if(typeof gwUrl != 'string') {
     throw new Error('gwUrl is invalid');
@@ -59,7 +64,7 @@ export default function(config) {
   async function retrievePage(url, target) {
     // try loop
     let lastError = new Error('unknown');
-    for(let i = 0; i < 3; ++i) {
+    for(let i = 0; i < (retriesOnError + 1); ++i) {
       // wait a bit on second and third try
       if(i > 0) {
         console.log('ghostwriter: repeated try to retrieve page', url, target);

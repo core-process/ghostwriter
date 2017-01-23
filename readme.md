@@ -268,6 +268,6 @@ Ghostwriter uses [PhantomJS](http://phantomjs.org/) internally to perform the pr
 
 In case you care about perfect pre-rendered pages, and you use modern `style` attributes in the DOM, which are not supported by PhantomJS, you need to add these styles to the `data-ghostwriter-style` attribute. Setting this attribute will ensure, the unsupported styles are still included in the pre-rendered page correctly.
 
-**Example:** PhantomJS does not support the style `object-fit`. Therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
+**Example:** PhantomJS does not support the style `object-fit`. Therefore `<img src="..." style="border: 0; object-fit: cover;">` would result in `<img src="..." style="border: 0;">`. If you render `<img src="..." style="border: 0; object-fit: cover;" data-ghostwriter-style="object-fit: cover;">` instead, it will get translated to the expected `<img src="..." style="border: 0; object-fit: cover;">` in the pre-rendered code.
 
 *Just to be clear:* In case you do not use these modern styles in the DOM or in case you do not care if the pre-rendered matches your dynamic application to the point, just leave it out.

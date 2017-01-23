@@ -32,9 +32,11 @@ async function setup() {
   const db = await MongoClient.connect(args.database_uri);
   // drop database
   if(!args.keep_database) {
+    console.log('dropping existing database...');
     await db.dropDatabase();
   }
   // initialize web service and sitemap crawler
+  console.log('starting service...');
   const
     config = new Config(db.collection('config')),
     cache = new Cache(db.collection('page'));

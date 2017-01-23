@@ -60,6 +60,13 @@ export default function(config) {
     // try loop
     let lastError = new Error('unknown');
     for(let i = 0; i < 3; ++i) {
+      // wait a bit on second and third try
+      if(i > 0) {
+        console.log('ghostwriter: repeated try to retrieve page', url, target);
+        await new Promise((resolve) => {
+          setTimeout(resolve, 3 * 1000); // wait 3 seconds
+        });
+      }
       // try to retrieve page
       let response = null;
       try {
@@ -75,6 +82,7 @@ export default function(config) {
         });
       }
       catch(error) {
+        console.log('ghostwriter: could not retrieve page - ', url, target, error.message || 'unknown error');
         lastError = error;
         continue; // try again
       }
@@ -90,6 +98,7 @@ export default function(config) {
       }
       // handle non 200 codes
       if(response.statusCode != 200) {
+        console.log('ghostwriter: could not retrieve page - ', url, target, 'status code != 200');
         lastError = new Error('status code != 200');
         continue; // try again
       }
@@ -98,6 +107,7 @@ export default function(config) {
         return JSON.parse(response.body);
       }
       catch(error) {
+        console.log('ghostwriter: could not retrieve page - ', url, target, error.message || 'unknown error');
         lastError = error;
         continue; // try again
       }

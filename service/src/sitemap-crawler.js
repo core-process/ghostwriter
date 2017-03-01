@@ -50,7 +50,9 @@ export default class SitemapCrawler {
     });
     console.log('content type:', sitemapResponse.headers['content-type']);
     // check if content type fits
-    if(sitemapResponse.headers['content-type'] != 'application/xml') {
+    if(  !sitemapResponse.headers['content-type'].startsWith('application/xml')
+      && !sitemapResponse.headers['content-type'].startsWith('text/xml')
+    ) {
       throw new Error('invalid content type');
     }
     // parse xml

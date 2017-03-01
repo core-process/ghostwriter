@@ -1,6 +1,6 @@
 {
   "name": "ghostwriter-service",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "description": "Ghostwriter prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
   "bin": {
     "ghostwriter-service": "build/main.js"

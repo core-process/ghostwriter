@@ -16,7 +16,8 @@ export default function(config) {
         ? config.retriesOnError
         : 3
       ),
-    fallbackOnError = !!config.fallbackOnError;
+    fallbackOnError = !!config.fallbackOnError,
+    firstRequest = true;
   config = _.omit(
     config,
     'token', 'urlTest', 'gwUrl',
@@ -76,6 +77,27 @@ export default function(config) {
           setTimeout(resolve, 3 * 1000); // wait 3 seconds
         });
       }
+      // transfer config upfront if this is the first request
+      if(firstRequest) {
+        console.log('ghostwriter: send our configuration to the service');
+        try {
+          await request({
+            simple: true,
+            method: 'POST',
+            uri: gwUrl + '/configure?' + querystring.stringify({ token }),
+            body: config,
+            json: true,
+          });
+          --i;
+          firstRequest = false;
+          continue; // try again
+        }
+        catch(error) {
+          console.log('ghostwriter: could not configure - ', url, target, error.message || 'unknown error');
+          lastError = error;
+          continue; // try again
+        }
+      }
       // try to retrieve page
       let response = null;
       try {
@@ -95,24 +117,12 @@ export default function(config) {
         lastError = error;
         continue; // try again
       }
-      // apply config if not done already
+      // re-apply config if service lost previous configuration (e.g. database reset)
       if(response.statusCode == 401) {
-        try {
-          await request({
-            simple: true,
-            method: 'POST',
-            uri: gwUrl + '/configure?' + querystring.stringify({ token }),
-            body: config,
-            json: true,
-          });
-          --i;
-          continue; // try again
-        }
-        catch(error) {
-          console.log('ghostwriter: could not configure - ', url, target, error.message || 'unknown error');
-          lastError = error;
-          continue; // try again
-        }
+        console.log('ghostwriter: service lost our configuration, re-applying!');
+        firstRequest = true;
+        --i;
+        continue; // try again
       }
       // handle non 200 codes
       if(response.statusCode != 200) {

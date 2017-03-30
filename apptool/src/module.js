@@ -24,10 +24,17 @@ export function target() {
 
 // setup function
 let _status = null;
+let _flushMethod = null;
 
 export function setup(...tokens) {
   if(_status) {
     throw new Error('cannot call setup twice!');
+  }
+  if(tokens.length == 0) {
+    throw new Error('please provide at least one token or flush method!');
+  }
+  if(typeof tokens[tokens.length-1] === 'function') {
+    _flushMethod = tokens.pop();
   }
   _status = { };
   for(let token of tokens) {
@@ -74,6 +81,12 @@ export function completed() {
   // check if all images are loaded
   for(let img of document.getElementsByTagName('img')) {
     if(!img.complete) {
+      return false;
+    }
+  }
+  // run flush routine if defined
+  if(_flushMethod) {
+    if(!_flushMethod()) {
       return false;
     }
   }

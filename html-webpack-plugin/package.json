@@ -1,6 +1,6 @@
 {
   "name": "ghostwriter-html-webpack-plugin",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "description": "Ghostwriter prerenders your JavaScript website for search engines, SEO tools, social media crawler and your browser.",
   "main": "module.js",
   "scripts": {

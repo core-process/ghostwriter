@@ -120,7 +120,6 @@ app.use(ghostwriter({
   urlTest: urlTest,
   gwUrl: 'http://localhost:8887',
   appUrl: 'http://localhost:8888',
-  fallbackOnError: true
 }));
 ...
 ```
@@ -139,7 +138,6 @@ The middleware accepts the following parameters:
 | `gwUrl` | URL pointing to Ghostwriter (can be on the local network) | none (required) |
 | `appUrl` | URL pointing to your application (can be on the local network) | `'http://localhost'` |
 | `retriesOnError` | Number of retries if Ghostwriter fails | `3` |
-| `fallbackOnError` | Fallback to default behavior in case Ghostwriter fails | `false` |
 
 ## Application Frontend
 

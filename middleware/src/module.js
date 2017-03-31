@@ -2,6 +2,7 @@ import _ from 'underscore';
 import request from 'request-promise';
 import querystring from 'querystring';
 import { validate } from 'jsonschema';
+import detectBrowser from 'detect-browser/lib/detectBrowser.js';
 
 import CONFIG_SCHEMA from 'ghostwriter-common/build/config-schema.js';
 
@@ -16,12 +17,11 @@ export default function(config) {
         ? config.retriesOnError
         : 3
       ),
-    fallbackOnError = !!config.fallbackOnError,
     firstRequest = true;
   config = _.omit(
     config,
     'token', 'urlTest', 'gwUrl',
-    'retriesOnError', 'fallbackOnError'
+    'retriesOnError'
   );
   // verify gwUrl
   if(typeof gwUrl != 'string') {
@@ -66,7 +66,7 @@ export default function(config) {
     throw new Error('invalid configuration');
   }
   // retrievePage function
-  async function retrievePage(url, target) {
+  async function retrievePage(url, target, allowEmpty) {
     // try loop
     let lastError = new Error('unknown');
     for(let i = 0; i < (retriesOnError + 1); ++i) {
@@ -108,7 +108,8 @@ export default function(config) {
           uri: gwUrl + '/retrieve-page?' + querystring.stringify({
             token,
             pageUrl: url,
-            target
+            target,
+            allowEmpty: allowEmpty ? 'yes' : 'no',
           }),
         });
       }
@@ -123,6 +124,10 @@ export default function(config) {
         firstRequest = true;
         --i;
         continue; // try again
+      }
+      // handle 204 code
+      if(response.statusCode == 204) {
+        return null;
       }
       // handle non 200 codes
       if(response.statusCode != 200) {
@@ -177,27 +182,29 @@ export default function(config) {
     if(userAgent.indexOf('Pinterest') !== -1) {
       target = 'pinterest';
     }
+    // figure out if we allow an empty response from the service.
+    // we will allow an empty response for typical real user agents
+    // to speedup delivery of the webpage in case it is currently not cached.
+    let allowEmpty = !!detectBrowser(userAgent);
     // lets do our magic
-    retrievePage(request.url, target)
+    retrievePage(request.url, target, allowEmpty)
       .then((page) => {
-        response.set('Content-Type', 'text/html; charset=utf-8');
-        response
-          .status(page.status)
-          .send(page.content);
+        if(!page) {
+          response.set('X-Ghostwriter-Status', '204 Page Currently Not Cached');
+          next();
+        }
+        else {
+          response.set('X-Ghostwriter-Status', '200 OK');
+          response.set('Content-Type', 'text/html; charset=utf-8');
+          response
+            .status(page.status)
+            .send(page.content);
+        }
       })
       .catch((error) => {
         console.error('ghostwriter:', 'load failed!', error.message || 'unknown error');
-        // fallback to default
-        if(fallbackOnError) {
-          next();
-        }
-        // report
-        else {
-          response.set('Content-Type', 'text/html; charset=utf-8');
-          response
-            .status(500)
-            .send('Ghostwriter service failed!');
-        }
+        response.set('X-Ghostwriter-Status', '500 Error Occurred');
+        next();
       });
   }
 }

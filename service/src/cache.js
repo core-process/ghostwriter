@@ -17,18 +17,14 @@ export default class Cache {
       });
   }
 
-  async retrievePage(config, url, target, backgroundRefresh = true) {
+  async retrievePage(config, url, target, backgroundRefresh, allowEmpty) {
     // rebase url
     url = adjustUrlBase(url, config.appUrl);
     console.log('*** ghostwriter:', 'loading url', url, target);
-    // retrieve page from cache if it exists
-    let page = await this._pageCollection.findOne(
-      { token: config.token, url, target }
-    );
-    // crawl page if required
-    if(!page) {
+    // crawl and cache routines
+    async function crawlCache() {
       const result = await crawl(config, url, target);
-      page = {
+      const page = {
         token: config.token,
         url: url,
         target: target,
@@ -38,46 +34,51 @@ export default class Cache {
         status: result.status,
       };
       await this._pageCollection.updateOne(
-        { token: page.token, url: page.url, target },
+        { token, url, target },
         page,
         { upsert: true, w: 'majority' }
       );
+      return page;
     }
-    // update page in background if required
-    else
-    if(  (page.timestamp + (config.refreshCycle * 60 * 60 * 1000)) < Date.now()
-      || page.version != config.version
-    ) {
-      if(backgroundRefresh && page.version == config.version) {
-        console.log('*** ghostwriter:', 'background crawling url', url, target);
-        crawl(config, url, target)
-          .then((result) => {
-            page.timestamp = Date.now();
-            page.version = config.version;
-            page.content = result.source;
-            page.status = result.status;
-            return this._pageCollection.updateOne(
-              { token: page.token, url: page.url, target },
-              page,
-              { upsert: true, w: 'majority' }
-            );
-          })
-          .catch((error) => {
-            console.log('*** ghostwriter:', 'background crawling failed', url, target);
-          });
+    async function fCrawlCache() {
+      console.log('*** ghostwriter:', 'foreground crawling url', url, target);
+      try {
+        return await crawlCache();
+      }
+      catch(error) {
+        console.log('*** ghostwriter:', 'background crawling failed', url, target);
+        throw error;
+      }
+    }
+    function bCrawlCache() {
+      console.log('*** ghostwriter:', 'background crawling url', url, target);
+      crawlCache()
+        .catch((error) => {
+          console.log('*** ghostwriter:', 'background crawling failed', url, target);
+        });
+    }
+    // retrieve page from cache if it exists
+    let page = await this._pageCollection.findOne(
+      { token: config.token, url, target }
+    );
+    // crawl page first time if required
+    if(!page || page.version != config.version) {
+      if(allowEmpty) {
+        bCrawlCache();
+        page = null;
       }
       else {
-        console.log('*** ghostwriter:', 'foreground crawling url', url, target);
-        const result = await crawl(config, url, target);
-        page.timestamp = Date.now();
-        page.version = config.version;
-        page.content = result.source;
-        page.status = result.status;
-        await this._pageCollection.updateOne(
-          { token: page.token, url: page.url, target },
-          page,
-          { upsert: true, w: 'majority' }
-        );
+        page = await fCrawlCache();
+      }
+    }
+    // re-crawl page if required
+    else
+    if((page.timestamp + (config.refreshCycle * 60 * 60 * 1000)) < Date.now()) {
+      if(backgroundRefresh) {
+        bCrawlCache();
+      }
+      else {
+        page = await fCrawlCache();
       }
     }
     // done

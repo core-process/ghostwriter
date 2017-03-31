@@ -94,6 +94,9 @@ export default class Service {
       if(!request.query.target) {
         throw new Error('target missing');
       }
+      if(!request.query.allowEmpty) {
+        throw new Error('allowEmpty missing');
+      }
       // get config
       const config = await this.config.retrieve(request.query.token);
       if(!config) {
@@ -106,12 +109,21 @@ export default class Service {
       const page = await this.cache.retrievePage(
         config,
         request.query.pageUrl,
-        request.query.target
+        request.query.target,
+        true,
+        request.query.allowEmpty=='yes'
       );
       // send response
-      response
-        .status(200)
-        .json(page);
+      if(!page) {
+        response
+          .status(204)
+          .json({});
+      }
+      else {
+        response
+          .status(200)
+          .json(page);
+      }
     }
     catch(error) {
       // send response

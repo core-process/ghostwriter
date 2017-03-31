@@ -105,6 +105,7 @@ export default class SitemapCrawler {
                 config,
                 pageUrl,
                 target,
+                false,
                 false
               );
             }

@@ -34,7 +34,7 @@ export default class Cache {
         status: result.status,
       };
       await this._pageCollection.updateOne(
-        { token, url, target },
+        { token: config.token, url, target },
         page,
         { upsert: true, w: 'majority' }
       );

@@ -22,7 +22,7 @@ export default class Cache {
     url = adjustUrlBase(url, config.appUrl);
     console.log('*** ghostwriter:', 'loading url', url, target);
     // crawl and cache routines
-    async function crawlCache() {
+    const crawlCache = async () => {
       const result = await crawl(config, url, target);
       const page = {
         token: config.token,
@@ -39,8 +39,8 @@ export default class Cache {
         { upsert: true, w: 'majority' }
       );
       return page;
-    }
-    async function fCrawlCache() {
+    };
+    const fCrawlCache = async () => {
       console.log('*** ghostwriter:', 'foreground crawling url', url, target);
       try {
         return await crawlCache();
@@ -49,14 +49,14 @@ export default class Cache {
         console.log('*** ghostwriter:', 'background crawling failed', url, target);
         throw error;
       }
-    }
-    function bCrawlCache() {
+    };
+    const bCrawlCache = () => {
       console.log('*** ghostwriter:', 'background crawling url', url, target);
       crawlCache()
         .catch((error) => {
           console.log('*** ghostwriter:', 'background crawling failed', url, target);
         });
-    }
+    };
     // retrieve page from cache if it exists
     let page = await this._pageCollection.findOne(
       { token: config.token, url, target }

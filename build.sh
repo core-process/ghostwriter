@@ -118,14 +118,14 @@ fi
 if [ "$ENABLE_DOCKER" = true ]; then
   cd "$ROOT_DIR"
   if [ "$ENABLE_REBUILD" = true ]; then
-    docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest --no-cache ./
+    docker build -f service/Dockerfile -t quay.io/core_process/ghostwriter-service:latest --no-cache ./
   else
-    docker build -f service/Dockerfile -t quay.io/process_team/ghostwriter-service:latest ./
+    docker build -f service/Dockerfile -t quay.io/core_process/ghostwriter-service:latest ./
   fi
   if [ "$ENABLE_PUBLISH" = true ]; then
-    docker tag quay.io/process_team/ghostwriter-service:latest quay.io/process_team/ghostwriter-service:$ENABLE_PUBLISH_VERSION
-    docker push quay.io/process_team/ghostwriter-service:latest
-    docker push quay.io/process_team/ghostwriter-service:$ENABLE_PUBLISH_VERSION
+    docker tag quay.io/core_process/ghostwriter-service:latest quay.io/core_process/ghostwriter-service:$ENABLE_PUBLISH_VERSION
+    docker push quay.io/core_process/ghostwriter-service:latest
+    docker push quay.io/core_process/ghostwriter-service:$ENABLE_PUBLISH_VERSION
   fi
 fi
 

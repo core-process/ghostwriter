@@ -18,7 +18,7 @@ export async function crawl(config, url, target) {
     uri: url,
     resolveWithFullResponse: true,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter; target '+base64.encode(target)+')',
+      'User-Agent': 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/coreprocess/ghostwriter; target '+base64.encode(target)+')',
     },
   });
   const checkContentType = checkResponse.headers['content-type'] || '';

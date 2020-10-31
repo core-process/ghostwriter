@@ -164,7 +164,7 @@ export default function(config) {
     }
     // detect sandbox mode
     const userAgent = request.get('user-agent') || '';
-    const sandbox = userAgent.indexOf('+https://github.com/core-process/ghostwriter') !== -1;
+    const sandbox = userAgent.indexOf('+https://github.com/coreprocess/ghostwriter') !== -1;
     if(sandbox) {
       next(); // bail out of we are in the sandbox
       return;

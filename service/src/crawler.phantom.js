@@ -23,7 +23,7 @@ async function crawler(url, target, contentPath, viewportWidth, viewportHeight, 
   };
   // trigger page load
   console.log('loading url...');
-  page.settings.userAgent = 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/core-process/ghostwriter; target '+base64.encode(target)+')';
+  page.settings.userAgent = 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Ghostwriter/1.0 (+https://github.com/coreprocess/ghostwriter; target '+base64.encode(target)+')';
   page.viewportSize = { width: viewportWidth, height: viewportHeight };
   await new Promise((resolve, reject) => {
     page.open(url, (status) => {

@@ -2,7 +2,7 @@ import _ from 'underscore';
 import serialize from './dom-serialize.js';
 
 // detect if we are in ghostwriter sandbox
-let _sandbox = navigator.userAgent.indexOf('+https://github.com/core-process/ghostwriter') !== -1;
+let _sandbox = navigator.userAgent.indexOf('+https://github.com/coreprocess/ghostwriter') !== -1;
 
 export function sandbox() {
   return _sandbox;

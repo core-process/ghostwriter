@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/core-process/ghostwriter.git"
+    "url": "git+https://github.com/coreprocess/ghostwriter.git"
   },
   "author": "Niklas Salmoukas <niklas@salmoukas.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/core-process/ghostwriter/issues"
+    "url": "https://github.com/coreprocess/ghostwriter/issues"
   },
-  "homepage": "https://github.com/core-process/ghostwriter#readme",
+  "homepage": "https://github.com/coreprocess/ghostwriter#readme",
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",

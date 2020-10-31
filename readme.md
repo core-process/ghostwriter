@@ -14,7 +14,7 @@ Ghostwriter is a replacement for the prerender.io service. In contrast to preren
 
 This approach results in one simple requirement for your web application: it should not be scared about prerendered content in the DOM, e.g. it should be able to discard and re-render, or it should be able to reconcile the content. Usually, this is not an issue if your web application is structured correctly. Also, we added a safeguard to control `link`, `script` and `style` tags which get added to the DOM by external libraries. You can read about it in the section "Handling of script, link and style tags" below.
 
-Here you will find a complete example web application based on React: https://github.com/core-process/ghostwriter-example
+Here you will find a complete example web application based on React: https://github.com/coreprocess/ghostwriter-example
 
 ## Ghostwriter Service
 
